@@ -5,7 +5,7 @@ const getFirebaseData = () =>
   Firebase.db.get
     .getCastaways()
     .once("value", snapshot =>
-      snapshot.val().map(snap => {})
+      snapshot.val()
     );
 
 const castaways = getFirebaseData();

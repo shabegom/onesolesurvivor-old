@@ -92,7 +92,8 @@ const setIdols = (idolFinds, idolAction) => {
             if (!idolAction.includes(idolHolder)) {
                 return idolHolder 
             }
-            } else {return idolHolder}
+            }
+            return idolHolder
         })
         db.ref('/state/hasIdol/').set(removedIdolUsers)
     })

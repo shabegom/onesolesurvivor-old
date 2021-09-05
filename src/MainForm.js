@@ -10,7 +10,7 @@ import {
 
 import { Redirect } from "react-router";
 import { withFirebase } from "./Firebase";
-import { CastawaysContext } from "./Castaways";
+// import { CastawaysContext } from "./Castaways";
 
 const Selected = props => (
   <div
