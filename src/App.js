@@ -54,7 +54,57 @@ class App extends Component {
     getRoot.once("value", snapshot => {
       let root = snapshot.val();
       let { castaways, state, teams, tribals, tribes } = root;
-      let { hasIdol, merged, numTribes } = state;
+      const eliminatedCastaways = tribals.reduce((acc, tribal) => {
+        acc.push(tribal.eliminated)
+        return acc.flat()
+      }, [])
+      castaways = castaways.map(castaway => {
+        if (eliminatedCastaways.includes(castaway.value)) {
+         castaway.eliminated = "TRUE"
+        } else {
+          castaway.eliminated = "FALSE"
+        }
+        return castaway
+      })
+      teams = teams.map(team => {
+        let totalPoints = 0
+        tribals.forEach(tribal => {
+          if (tribal.teams) {
+               tribal.teams.forEach(teamScore => {
+            if (team.name === teamScore.name) {
+                totalPoints += teamScore.points
+            }
+          })
+          }
+       
+        })
+        team.totalPoints = totalPoints
+        return team
+      })
+      let usedIdol = tribals.reduce((acc, tribal) => {
+        if (tribal.idolUsers) {
+          acc.push(tribal.idolUsers)
+        }
+        return acc.flat()
+      }, [])
+      const hasIdol = tribals.reduce((acc, tribal) => {
+        if (tribal.foundIdol) {
+          acc.push(tribal.foundIdol)
+        }
+        if (tribal.wonIdol) {
+          acc.push(tribal.wonIdol)
+        }
+        return acc.flat()
+      }, []).filter(idolHolder => {
+        if (usedIdol.includes(idolHolder)) {
+          const index = usedIdol.indexOf(idolHolder)
+          usedIdol = usedIdol.splice(index, 1)
+          return false
+        } else {
+          return true
+        }
+      })
+      let { merged, numTribes } = state;
       let leader;
       let finalArr = [];
       let summaries = tribals

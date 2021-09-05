@@ -19,9 +19,9 @@ const createTribalsColumns = count => {
   let finalArr = [];
   const recur = () => {
     if (count !== 0) {
-      let tribalNum = count + 2;
+      let tribalNum = count - 1
       finalArr.unshift({
-        Header: "Tribal " + tribalNum,
+        Header: "Tribal " + count, 
         accessor: "tribal-" + tribalNum,
         width: 90
       });
@@ -49,7 +49,7 @@ const Table = ({tribals, leader, data}) => {
           <div className="leader"style={leaderStyle}>
             Current Leader:  {`  `}
             {leader ? (
-              <span className="leader" style={leaderNameStyle}>
+              <span style={leaderNameStyle}>
                 {leader}
               </span>
             ) : (

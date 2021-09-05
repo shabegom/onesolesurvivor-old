@@ -274,7 +274,7 @@ class MainForm extends Component {
               handleRemove={this.handleRemove}
             />
             <Selection
-              name="idolFound"
+              name="foundIdol"
               label="Anyone find an idol?"
               selected={this.state.foundIdol}
               options={castawaysDropDown}
@@ -282,7 +282,7 @@ class MainForm extends Component {
               handleRemove={this.handleRemove}
             />
             <Selection
-              name="idolWon"
+              name="wonIdol"
               label="Anyone win an idol?"
               selected={this.state.wonIdol}
               options={castawaysDropDown}

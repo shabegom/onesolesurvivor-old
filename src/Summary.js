@@ -16,7 +16,7 @@ export default class Summary extends Component {
                 finalArr.push(
                     <p>
                         {toTitleCase(eliminated.join('-').split('-').join(' '))} was
-                        eliminated
+                        eliminated 😢
                     </p>
                 )
                 if (lastElement.idolFound) {
@@ -24,7 +24,7 @@ export default class Summary extends Component {
                         finalArr.push(
                             <p>
                                 {toTitleCase(idol.split('-').join(' '))} found
-                                an Idol: +5 points
+                                an Idol (5 points) 🥇
                             </p>
                         )
                     })
@@ -34,7 +34,7 @@ export default class Summary extends Component {
                         finalArr.push(
                             <p>
                                 {toTitleCase(idol.split('-').join(' '))} Won
-                                an Idol: +1 point
+                                an Idol (+1 point) 🥇
                             </p>
                         )
                     })
@@ -44,7 +44,7 @@ export default class Summary extends Component {
                     finalArr.push(
                         <p>
                             {toTitleCase(immunityWinner.split('-').join(' '))}{' '}
-                            won Immunity: +5 points
+                            won Immunity (+5 points) 📿
                         </p>
                     )
                 }
@@ -54,18 +54,28 @@ export default class Summary extends Component {
                         lastElement.reward.map(r => {
                             return (
                                 <li style={{ marginLeft: '30px' }}>
-                                    {toTitleCase(r.split('-').join(' '))}
+                                    {toTitleCase(r.split('-').join(' '))} won Reward (+5 points) 🍔
                                 </li>
                             )
                         })
                     )
                 }
                 if (lastElement.idolActions) {
-                    finalArr.push(<p>Idols:</p>)
+                    finalArr.push(<p>Used Idols:</p>)
                     finalArr.push(
                         lastElement.idolActions.map(object => {
+                            let action;
+                            if (object.action === "voted-out") {
+                                action = "Was voted out with an Idol! (-10 points) 😱"
+                            }
+                            if (object.action === "saved-self") {
+                                action = "Saved by their idol (+5 points) 🎉"
+                            }
+                            if (object.action === "burned") {
+                                action = "Burned their idol (0 points) 🔥"
+                            }
                             return (
-                                <li style={{ marginLeft: '30px' }}>{object.value.split('-').join(' ')}: {object.action}</li>
+                                <li style={{ marginLeft: '30px' }}>{toTitleCase(object.value.split('-').join(' '))}: {action}</li>
                             )
                         })
                     )
