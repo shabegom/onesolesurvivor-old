@@ -3,7 +3,7 @@ import logo from './survivor-logo.WEBP'
 
 const imageStyle = {
     width: "20%",
-    minWidth: "150px"
+    minWidth: "180px"
 }
 
 class Header extends Component {

@@ -12,17 +12,17 @@ class Eliminated extends React.Component {
                         let imageName = castaway.value
                         let imagePath = require(`./images/${imageName}.jpg`)
                         nameArray.push(
-                            <div style={{ padding: '2px', margin: "10px" }}>
+                            <div className="castaway">
 
                                 <div style={{background: 'RGBA(0,0,0,.30)', }}>
                                 <img
                                     alt={'eliminated-castaway'+castaway.value}
 
                                     src={imagePath}
-                                    style={{ width: '150px', opacity: '0.3', filter: 'drop-shadow(1px 0px 4px #4444dd)' }}
+                                    style={{ width: '75px', opacity: '0.3', filter: 'drop-shadow(1px 0px 4px #4444dd)' }}
                                 />{' '}
                                 </div>
-                                <div style={{fontFamily: "arial", textAlign: "center" }}>
+                                <div style={{fontFamily: "arial", textAlign: "center", fontSize: "12px" }}>
                                     {name}
                                     </div>
 
@@ -46,7 +46,6 @@ class Eliminated extends React.Component {
                         flexWrap: 'wrap',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        justifyContent: 'center'
                     }}
                 >
                     {makeElimNames(this.props.castaways)}

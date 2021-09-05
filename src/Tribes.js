@@ -8,17 +8,17 @@ export default class Tribes extends Component {
         let imagePath = require(`./images/${name}.jpg`);
         if (tribe.eliminated[i] === "FALSE") {
           return (
-            <div style={{ paddingBottom: "10px", margin: "10px" }}>
+            <div className="castaway">
               <img
                 alt={"castaway-" + i}
                 src={imagePath}
                 style={{
-                  width: "150px",
+                  width: "75px",
                   filter: "drop-shadow(1px 0px 4px RGBA(76,60,75,1.00))"
                 }}
               />{" "}
               <br />
-              <div style={{ paddingTop: "2px", paddingRight: "5px", fontFamily: "arial", textAlign: "center"}}>{tribe.names[i]}</div>
+              <div style={{fontFamily: "arial", textAlign: "center", fontSize: "12px", marginTop: "-20px"}}>{tribe.names[i]}</div>
             </div>
           );
         }
@@ -39,7 +39,6 @@ export default class Tribes extends Component {
                 flexWrap: "wrap",
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "center"
               }}
             >
               {makeTribeNames(tribe)}
