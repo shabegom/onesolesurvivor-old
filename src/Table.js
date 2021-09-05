@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 
@@ -23,7 +23,7 @@ const createTribalsColumns = count => {
       finalArr.unshift({
         Header: "Tribal " + tribalNum,
         accessor: "tribal-" + tribalNum,
-        width: 80
+        width: 90
       });
       count--;
       recur(count);
@@ -35,23 +35,22 @@ const createTribalsColumns = count => {
   return finalArr;
 };
 
-export default class Table extends Component {
-  render() {
-    let columnArr = createTribalsColumns(17);
-    let columns = [
+const Table = ({tribals, leader, data}) => {
+    const columnArr = createTribalsColumns(tribals.length);
+    const columns = [
       { Header: "Team", accessor: "name", width: 180, className: "team" },
       { Header: "Picks", accessor: "picks", width: 250, className: "picks" },
       { Header: "Total", accessor: "totalPoints", width: 70 },
       ...columnArr,
-      { Header: "Final Tribal", accessor: "tribal-20", width: 150 }
+      { Header: "Final Tribal", accessor: "tribal-20", width: 120 }
     ];
     return (
-        <div className="leaderboard">
+        <div className={'leaderboard'}>
           <div className="leader"style={leaderStyle}>
             Current Leader:  {`  `}
-            {this.props.leader ? (
+            {leader ? (
               <span className="leader" style={leaderNameStyle}>
-                {this.props.leader}
+                {leader}
               </span>
             ) : (
               <em style={leaderNameStyle}>There Can only be one!</em>
@@ -61,10 +60,11 @@ export default class Table extends Component {
             className={"-highlight -striped"}
             defaultPageSize={15}
             showPagination={false}
-            data={this.props.data}
+            data={data}
             columns={columns}
           />
         </div>
     );
   }
-}
+
+export default Table;

@@ -47,7 +47,8 @@ class App extends Component {
       leader: "",
       tribes: [],
       castaways: "",
-      summary: {}
+      summary: {},
+      tribals: []
     };
 
     getRoot.once("value", snapshot => {
