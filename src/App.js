@@ -3,6 +3,8 @@ import "./global.css";
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
+import castaways, { CastawaysContext } from "./Castaways";
+
 // Dumb Components
 import Header from "./Header.js";
 import Footer from "./Footer.js";
@@ -28,7 +30,7 @@ import {
 
 const pageStyle = {
   background:
-    "linear-gradient(RGBA(126,134,193,1.00), RGBA(43,93,167,1.00), RGBA(40,30,50,1.00)",
+    "linear-gradient(rgba(92, 140, 180, 1.00),rgba(0, 91, 144, 1.00),rgba(60, 43, 87, 1.00))",
   color: "RGBA(233,227,201,1.00)",
   textShadow: "1px 1px 2px RGBA(73,53,66,1.00)"
 };
@@ -71,62 +73,68 @@ class App extends Component {
 
       //get tribal data into the table array
       let possibleLeaders = [];
-      teams.forEach(team => {
-        if (team.totalPoints === highscore && team.totalPoints !== 0) {
-          possibleLeaders.push(team.name);
-        }
-        let pickNames = [];
-        let teamObj = {};
-        tribes.forEach(tribe => {
-          let isEliminated = [];
-          let castawayNames = [];
-          castaways.forEach(castaway => {
-            tribe.castaways.forEach(value => {
-              if (castaway.value === value) {
-                isEliminated.push(castaway.eliminated);
-                castawayNames.push(castaway.label);
-              }
+      teams &&
+        teams.forEach(team => {
+          if (team.totalPoints === highscore && team.totalPoints !== 0) {
+            possibleLeaders.push(team.name);
+          }
+          let pickNames = [];
+          let teamObj = {};
+          tribes &&
+            tribes.forEach(tribe => {
+              let isEliminated = [];
+              let castawayNames = [];
+              castaways &&
+                castaways.forEach(castaway => {
+                  tribe &&
+                    tribe.castaways.forEach(value => {
+                      if (castaway.value === value) {
+                        isEliminated.push(castaway.eliminated);
+                        castawayNames.push(castaway.label);
+                      }
+                    });
+                });
+              tribe["eliminated"] = isEliminated;
+              tribe["names"] = castawayNames;
             });
-          });
-          tribe["eliminated"] = isEliminated;
-          tribe["names"] = castawayNames;
-        });
 
-        castaways.forEach(castaway => {
-          team.picks.forEach(pick => {
-            if (pick === castaway.value) {
-              if (castaway.eliminated === "TRUE") {
-                pickNames.push(
-                  <span
-                    style={{
-                      color: "RGBA(145,147,134,.30)",
-                      filter: "none"
-                    }}
-                  >
-                    {castaway.label.split(" ")[0]}
-                  </span>,
-                  " "
-                );
-              } else {
-                pickNames.push(castaway.label.split(" ")[0], " ");
-              }
+          castaways &&
+            castaways.forEach(castaway => {
+              team &&
+                team.picks.forEach(pick => {
+                  if (pick === castaway.value) {
+                    if (castaway.eliminated === "TRUE") {
+                      pickNames.push(
+                        <span
+                          style={{
+                            color: "RGBA(145,147,134,.30)",
+                            filter: "none"
+                          }}
+                        >
+                          {castaway.label.split(" ")[0]}
+                        </span>,
+                        " "
+                      );
+                    } else {
+                      pickNames.push(castaway.label.split(" ")[0], " ");
+                    }
+                  }
+                });
+            });
+          teamObj["name"] = team.name;
+          teamObj["totalPoints"] = team.totalPoints;
+          teamObj["picks"] = pickNames;
+          tribals.forEach(tribal => {
+            if (tribal.teams) {
+              tribal.teams.forEach(tribalTeam => {
+                if (team.value === tribalTeam.value) {
+                  teamObj[tribal.value] = tribalTeam.points;
+                }
+              });
             }
           });
+          finalArr.push(teamObj);
         });
-        teamObj["name"] = team.name;
-        teamObj["totalPoints"] = team.totalPoints;
-        teamObj["picks"] = pickNames;
-        tribals.forEach(tribal => {
-          if (tribal.teams) {
-            tribal.teams.forEach(tribalTeam => {
-              if (team.value === tribalTeam.value) {
-                teamObj[tribal.value] = tribalTeam.points;
-              }
-            });
-          }
-        });
-        finalArr.push(teamObj);
-      });
       if (possibleLeaders.length === 1) {
         leader = possibleLeaders[0];
       }
@@ -159,44 +167,45 @@ class App extends Component {
     };
 
     const baseUrl = process.env.PUBLIC_URL;
-    console.log(process.env);
 
     return (
       <div className="App" style={pageStyle}>
         <Header />
-        <Router>
-          <div>
-            <Route
-              exact={true}
-              path={baseUrl + "/"}
-              render={props => (
-                <Home
-                  summary={this.state.summary}
-                  tribes={this.state.tribes}
-                  leader={this.state.leader}
-                  tableData={this.state.tableData}
-                  tribals={this.state.tribals}
-                  castaways={this.state.castaways}
-                />
-              )}
-            />
-            <Route
-              exact={true}
-              path={baseUrl + "/admin"}
-              render={props => (
-                <div style={{ padding: "10px" }}>
-                  <Login />
-                  <MainForm
-                    processForm={processForm}
-                    fireRedirect={this.state.fireRedirect}
-                    merged={this.state.merged}
-                    hasIdol={this.state.hasIdol}
+        <CastawaysContext.Provider value={castaways}>
+          <Router>
+            <div>
+              <Route
+                exact={true}
+                path={baseUrl + "/"}
+                render={props => (
+                  <Home
+                    summary={this.state.summary}
+                    tribes={this.state.tribes}
+                    leader={this.state.leader}
+                    tableData={this.state.tableData}
+                    tribals={this.state.tribals}
+                    castaways={this.state.castaways}
                   />
-                </div>
-              )}
-            />
-          </div>
-        </Router>
+                )}
+              />
+              <Route
+                exact={true}
+                path={baseUrl + "/admin"}
+                render={props => (
+                  <div style={{ padding: "10px" }}>
+                    <Login />
+                    <MainForm
+                      processForm={processForm}
+                      fireRedirect={this.state.fireRedirect}
+                      merged={this.state.merged}
+                      hasIdol={this.state.hasIdol}
+                    />
+                  </div>
+                )}
+              />
+            </div>
+          </Router>
+        </CastawaysContext.Provider>
         <Footer />
       </div>
     );

@@ -17,7 +17,6 @@ function Login() {
 
   const onSubmit = event => {
     const { email, password } = event;
-    console.log(email, password);
     return firebase.auth
       .doSignInWithEmailAndPassword(email, password)
       .then(() => console.log("success"))

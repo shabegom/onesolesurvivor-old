@@ -29,6 +29,16 @@ export default class Summary extends Component {
                         )
                     })
                 }
+                if (lastElement.idolWon) {
+                    lastElement.idolWon.forEach(idol => {
+                        finalArr.push(
+                            <p>
+                                {toTitleCase(idol.split('-').join(' '))} Won
+                                an Idol: +1 point
+                            </p>
+                        )
+                    })
+                }
                 if (lastElement.immunity) {
                     let immunityWinner = lastElement.immunity.join('-')
                     finalArr.push(

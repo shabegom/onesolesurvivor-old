@@ -10,6 +10,7 @@ export const processFormObject = form => {
     eliminated,
     extinction,
     idolFound,
+      idolWon,
     immunity,
     reward
   } = form;
@@ -40,6 +41,11 @@ export const processFormObject = form => {
           pointRules.push({ selected: person, value: 5, gainOrLoss: "gain" })
         )
       : "";
+      idolWon
+      ? idolWon.forEach(person =>
+          pointRules.push({ selected: person, value: 1, gainOrLoss: "gain" })
+        )
+      : "";
     reward
       ? reward.forEach(person =>
           pointRules.push({ selected: person, value: 5, gainOrLoss: "gain" })
@@ -66,7 +72,7 @@ export const processFormObject = form => {
     }
     const points = pointFuncs
       .map(func => castawaysMultiSelect.map(c => func(c.value)))
-      // Remove any zero point values
+          // Remove any zero point values
       .map(point => removeZero(point))
       .reduce((a, b) => a.concat(b))
       //add up all the points
@@ -90,7 +96,9 @@ export const processFormObject = form => {
     obj["merged"] = merged;
     obj["idolUsers"] = idolActioners.map(actioner => actioner.value);
     obj["foundIdol"] = idolFound ? idolFound : [];
+    obj["wonIdol"] = idolWon ? idolWon : [];
     idolFound ? (obj.summary["idolFound"] = idolFound) : "";
+    idolWon ? (obj.summary["idolWon"] = idolWon) : "";
     immunity ? (obj.summary["immunity"] = immunity) : "";
     reward ? (obj.summary["reward"] = reward) : "";
     idolActioners ? (obj.summary["idolActions"] = idolActioners) : "";

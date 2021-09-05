@@ -10,6 +10,7 @@ import {
 
 import { Redirect } from "react-router";
 import { withFirebase } from "./Firebase";
+import { CastawaysContext } from "./Castaways";
 
 const Selected = props => (
   <div
@@ -164,6 +165,7 @@ class MainForm extends Component {
     data.eliminated = this.state.eliminated;
     data.extinction = this.state.extinction;
     data.idolFound = this.state.foundIdol;
+    data.idolWon = this.state.wonIdol;
     data.reward = this.state.reward;
     data.merged = this.state.merged ? this.state.merged : this.props.merged;
     data.immunity = this.state.immunity;
@@ -207,6 +209,13 @@ class MainForm extends Component {
               options={castawaysDropDown}
               handleChange={this.selectionChange("foundIdol")}
             />
+            <Selection
+              name="idolWon"
+              label="Anyone win an idol?"
+              selected={this.state.wonIdol}
+              options={castawaysDropDown}
+                  handleChange={this.selectionChange("wonIdol")}
+            />
             {this.props.hasIdol || this.state.foundIdol ? (
               <h3>Did anyone use their idol?</h3>
             ) : (
@@ -214,6 +223,7 @@ class MainForm extends Component {
             )}
             {this.props.hasIdol ? HandleIdol(this.props.hasIdol) : ""}
             {this.state.foundIdol ? HandleIdol(this.state.foundIdol) : ""}
+            {this.state.wonIdol ? HandleIdol(this.state.wonIdol) : ""}
             <div>
               <input
                 type="checkbox"

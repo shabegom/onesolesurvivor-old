@@ -36,7 +36,7 @@ export const setTribal = points => {
                 db.ref('/tribals/' + i + '/').update(points)
                 updateCastaway(points.eliminated, points.extinction)
                 setMerged(points.merged)
-                setIdols(points.foundIdol, points.idolUsers)
+                setIdols([...points.foundIdol, ...points.wonIdol], points.idolUsers)
                 return 'sucess'
             }
             return 'failure'
@@ -87,7 +87,6 @@ const setIdols = (idolFinds, idolAction) => {
     getState.once('value', snapshot => {
         let currentIdolHolders = snapshot.val().hasIdol
         let allIdolHolders = currentIdolHolders ? currentIdolHolders.concat(idolFinds) : idolFinds
-        /* eslint-disable */
         let removedIdolUsers = allIdolHolders.filter(idolHolder => {
             if (idolAction) {
             if (!idolAction.includes(idolHolder)) {

@@ -3,13 +3,12 @@ import React, { Component } from "react";
 export default class Tribes extends Component {
   render() {
     const makeTribeNames = tribe => {
-      let nameArray = [];
-      tribe.castaways.sort().forEach((name, i) => {
+      return tribe.castaways.map((name, i) => {
         // let imageName = name.toLowerCase().replace(/ /g, '-')
         let imagePath = require(`./images/${name}.jpg`);
         if (tribe.eliminated[i] === "FALSE") {
-          nameArray.push(
-            <div style={{ paddingBottom: "10px" }}>
+          return (
+            <div style={{ paddingBottom: "10px", margin: "10px" }}>
               <img
                 alt={"castaway-" + i}
                 src={imagePath}
@@ -23,8 +22,8 @@ export default class Tribes extends Component {
             </div>
           );
         }
+        return "";
       });
-      return nameArray;
     };
     const makeTribes = tribes => {
       let finalTribeArray = [];
@@ -38,7 +37,9 @@ export default class Tribes extends Component {
               style={{
                 display: "flex",
                 flexWrap: "wrap",
-                flexDirection: "row"
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center"
               }}
             >
               {makeTribeNames(tribe)}

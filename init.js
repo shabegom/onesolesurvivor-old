@@ -1,5 +1,13 @@
+//
+//
+// Setup for OneSoleSurvivor Classic
+// 1. Enter tribe names (line 25)
+// 2. Enter castaway's tribe (line 74)
+//
+//
+//
 let fs = require("fs");
-let file = "./survivor-extinction.csv";
+let file = "./winners-at-war.csv";
 const csv = require("csvtojson");
 let teamFile = "./teams.csv";
 
@@ -18,13 +26,13 @@ let tribals = {};
 let finalObj = {};
 let castaways = {};
 tribes[0] = {
-  tribeName: "Manu",
+  tribeName: "Sele",
   castaways: [],
   names: [],
   eliminated: []
 };
 tribes[1] = {
-  tribeName: "Kama",
+  tribeName: "Dakal",
   castaways: [],
   names: [],
   eliminated: []
@@ -32,7 +40,7 @@ tribes[1] = {
 
 const generateTribals = count => {
   let obj = {};
-  for (let i = 2; i <= count; i++) {
+  for (let i = 3; i <= count; i++) {
     obj[i] = {
       complete: false,
       label: `Tribal ${i}`,
@@ -47,13 +55,14 @@ csv()
   .then(obj => {
     console.log("parsed teams");
     obj.forEach((o, i) => {
+      console.log(o);
       teams[i] = {
         isLeader: false,
         name: o.player,
         picks: {
           0: o.pickOne,
-          1: o.pickTwo,
           2: o.pickThree,
+          1: o.pickTwo,
           3: o.random
         },
         points: 0,
@@ -68,23 +77,23 @@ csv()
   .then(obj => {
     console.log("parsed castaways");
     obj.forEach((o, i) => {
-      if (o.tribe === "kama") {
+      if (o.tribe === "Sele") {
         tribes[0].castaways.push(o.value);
         tribes[0].names.push(o.label);
         tribes[0].eliminated.push(o.eliminated);
-      } else if (o.tribe === "manu") {
+      } else if (o.tribe === "Dakal") {
         tribes[1].castaways.push(o.value);
         tribes[1].names.push(o.label);
         tribes[1].eliminated.push(o.eliminated);
       }
     });
     obj.forEach((o, i) => (castaways[i] = o));
+    finalObj["teams"] = teams;
     finalObj["castaways"] = castaways;
     finalObj["state"] = state;
     finalObj["tribes"] = tribes;
     finalObj["tribals"] = generateTribals(14);
-    finalObj["teams"] = teams;
     let json = JSON.stringify(finalObj);
     console.log("writing file");
-    fs.writeFile("./init.json", json, () => console.log("file written"));
+    fs.writeFileSync("./init.json", json, () => console.log("file written"));
   });

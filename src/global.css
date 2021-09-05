@@ -1,62 +1,60 @@
 @font-face {
-    font-family: yoz;
-    src: url('./yoz.woff')
-
+  font-family: yoz;
+  src: url("./yoz.woff");
 }
 
 @font-face {
-    font-family: survives;
-    src: url('./Survivant.woff')
+  font-family: survives;
+  src: url("./Survivant.woff");
 }
 
 html body {
-    font-family: 'survives', sans-serif;
-    text-shadow: '.4px 0px 2px RGBA(233,227,201,1.00)';
-    background-color: 'linear-gradient( RGBA(92,54,127,1.00),10%, RGBA(126,134,193,1.00), RGBA(43,93,167,1.00)';
-    color: 'RGBA(164,161,168,1.00)';
+  font-family: "survives", sans-serif;
+  text-shadow: ".4px 0px 2px RGBA(233,227,201,1.00)";
+  background-color: "linear-gradient( rgba(92, 140, 180, 1.00),10%, rgba(0, 91, 144, 1.00), rgba(60, 43, 87, 1.00)";
+  color: "RGBA(164,161,168,1.00)";
 }
 
 strong {
-    font-family: 'survives', serif;
+  font-family: "survives", serif;
 }
 
 h3 {
-    font-size: 3rem;
-    font-family: 'yoz', sans-serif;
-    color: 'RGBA(238,233,114,1.00)';
+  font-size: 3rem;
+  font-family: "yoz", sans-serif;
+  color: "RGBA(238,233,114,1.00)";
 }
 
 h4 {
-    font-family: 'survives', sans-serif;
-    font-size:1.66rem;
-    text-align: center;
+  font-family: "survives", sans-serif;
+  font-size: 1.66rem;
+  text-align: center;
 }
 
 a {
-    color: RGBA(24,34,103,1.00);
-    background: RGBA(255,251,200,1.00);
-    padding: 10px;
+  color: RGBA(24, 34, 103, 1);
+  background: RGBA(255, 251, 200, 1);
+  padding: 10px;
 }
 
 a:hover {
-    color: RGBA(255,251,200,1.00);
-    text-decoration: none;
-    background: RGBA(24,34,103,1.00);
-
+  color: RGBA(255, 251, 200, 1);
+  text-decoration: none;
+  background: RGBA(24, 34, 103, 1);
 }
 
 .rt-thead {
-    background:  RGBA(53,46,30,1.00) !important;
-    color: RGBA(231,226,230,1.00) !important;
-    font-size: 14px !important;
-    text-shadow: none;
+  background: RGBA(53, 46, 30, 1) !important;
+  color: RGBA(231, 226, 230, 1) !important;
+  font-size: 14px !important;
+  text-shadow: none;
 }
 
 .rt-tbody {
-text-align: center;
-font-family: 'survives';
+  text-align: center;
+  font-family: "survives";
 }
 
 li {
-    list-style-type: none;
+  list-style-type: none;
 }
