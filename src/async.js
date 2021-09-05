@@ -37,7 +37,7 @@ export const setTribal = points => {
                 updateCastaway(points.eliminated, points.extinction)
                 setMerged(points.merged)
                 setIdols([...points.foundIdol, ...points.wonIdol], points.idolUsers)
-                return 'sucess'
+                return 'success'
             }
             return 'failure'
         })
