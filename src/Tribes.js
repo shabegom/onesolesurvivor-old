@@ -18,7 +18,7 @@ export default class Tribes extends Component {
                 }}
               />{" "}
               <br />
-              <div style={{ paddingRight: "5px" }}>{tribe.names[i]}</div>
+              <div style={{ paddingTop: "2px", paddingRight: "5px", fontFamily: "arial", textAlign: "center"}}>{tribe.names[i]}</div>
             </div>
           );
         }
@@ -31,7 +31,7 @@ export default class Tribes extends Component {
         let tribeArray = [];
         tribeArray.push(
           <div>
-            <h4>{tribe.tribeName}</h4>
+            <h3>{tribe.tribeName}</h3>
             <hr />
             <div
               style={{
@@ -54,9 +54,8 @@ export default class Tribes extends Component {
       <div
         id="tribes"
         className="tribes"
-        style={{ background: "RGBA(248,247,217,0.02)" }}
       >
-        <h3 style={{ textAlign: "center" }}>Castaways</h3>
+    
         {makeTribes(this.props.tribes)}
       </div>
     );

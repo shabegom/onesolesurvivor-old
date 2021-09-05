@@ -29,10 +29,6 @@ import {
 } from "./async.js";
 
 const pageStyle = {
-  background:
-    "linear-gradient(rgba(92, 140, 180, 1.00),rgba(0, 91, 144, 1.00),rgba(60, 43, 87, 1.00))",
-  color: "RGBA(233,227,201,1.00)",
-  textShadow: "1px 1px 2px RGBA(73,53,66,1.00)"
 };
 
 class App extends Component {

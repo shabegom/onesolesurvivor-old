@@ -74,7 +74,7 @@ export default class Summary extends Component {
             return finalArr
         }
         return (
-            <div>
+            <div className="summary">
                 <div
                     style={{
                         background: 'RGBA(248,247,217,0.01)',
@@ -83,7 +83,7 @@ export default class Summary extends Component {
                     }}
                 >
 
-				<h3 style={{ textAlign: 'center' }}>Last Episode</h3>
+				<h3 style={{  }}>Last Episode</h3>
                     {this.props.summary[0]
                         ? buildSummary(this.props.summary)
                         : "A summary of the last tribal will be posted here once we've started."}

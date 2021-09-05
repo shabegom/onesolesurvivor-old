@@ -5,11 +5,9 @@ export default class Rules extends Component {
     return (
       <div
         id="rules"
-        style={{
-          background: "RGBA(238,233,114,.1)"
-        }}
+        className="rules"
       >
-        <h3 style={{ textAlign: "center" }}>Scoring</h3>
+        <h3 style={{  }}>Scoring</h3>
         <div
           style={{
             padding: "10px",
