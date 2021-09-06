@@ -157,3 +157,21 @@ li {
 	margin: 10px;
 	margin-bottom: 20px;
 }
+
+.login-form {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.login-modal {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.login-modal-subhead {
+	font-family:Arial, Helvetica, sans-serif;
+}

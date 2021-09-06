@@ -131,12 +131,13 @@ class MainForm extends Component {
       buffs: false,
       numTribes: 2,
       loggedIn: false
-    };
+    }
   }
-
+  
   componentDidMount() {
     this.props.firebase.auth.auth.onAuthStateChanged(authUser => {
-      authUser
+      const adminId = process.env.REACT_APP_ADMIN_UID
+      authUser && authUser.uid === adminId
         ? this.setState({ loggedIn: true })
         : this.setState({ loggedIn: false });
     });
@@ -190,7 +191,7 @@ class MainForm extends Component {
   }
 
   handleCreateTribal = event => {
-    const tribals = this.props.firebase.db.get.getTribals().once("value", snap => {
+    this.props.firebase.db.get.getTribals().once("value", snap => {
       const val = snap.val();
       const count = val.length
     const tribal = {}

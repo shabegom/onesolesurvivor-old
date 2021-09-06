@@ -28,6 +28,8 @@ import {
   getRoot
 } from "./async.js";
 
+import { withFirebase } from "./Firebase"
+
 const pageStyle = {
 };
 
@@ -202,6 +204,14 @@ class App extends Component {
 
   handleLogin = () => this.setState({ loggedIn: true, showLogin: false });
 
+  onAuthStateChangeHandler = (setState, value) => {
+          this.props.firebase.auth.auth.onAuthStateChanged(user => {
+      const adminId = process.env.REACT_APP_ADMIN_UID
+      if (user && user.uid === adminId) {
+        setState(value);
+      }
+    });
+    }
   render() {
     const processForm = formData => {
       const points = processFormObject(formData);
@@ -212,6 +222,8 @@ class App extends Component {
         this.setState({ fireRedirect: true });
       }
     };
+
+
 
     const baseUrl = process.env.PUBLIC_URL;
 
@@ -240,7 +252,10 @@ class App extends Component {
                 path={baseUrl + "/admin"}
                 render={props => (
                   <div style={{ padding: "10px" }}>
-                    <Login />
+                    <Login
+                      onAuthStateChangeHandler={this.onAuthStateChangeHandler}
+                      allowRegistration={false}
+                    />
                     <MainForm
                       processForm={processForm}
                       fireRedirect={this.state.fireRedirect}
@@ -259,4 +274,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withFirebase(App);
