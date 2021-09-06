@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useContext, useState, useEffect} from "react";
 import ReactTable from "react-table";
 import "react-table/react-table.css";
+import {FirebaseContext} from './Firebase'
 
 const leaderStyle = {
   textAlign: "center",
@@ -35,7 +36,53 @@ const createTribalsColumns = count => {
   return finalArr;
 };
 
-const Table = ({tribals, leader, data}) => {
+const Table = () => {
+  const firebase = useContext(FirebaseContext)
+  const [tribals, setTribals] = useState([])
+  const [leader, setLeader] = useState(undefined)
+  const [data, setData] = useState([])
+  useEffect(() => {
+    firebase.db.get.getRoot().once("value", snap => {
+      let { teams, tribals } = snap.val()
+      tribals && setTribals(tribals)
+      if (teams) {
+       teams = teams.map((team) => {
+         let totalPoints = 0;
+         tribals.forEach((tribal) => {
+           if (tribal.teams) {
+             tribal.teams.forEach((teamScore) => {
+               if (team.name === teamScore.name) {
+                 team[tribal.value] = teamScore.points;
+                 totalPoints += teamScore.points;
+               }
+             });
+           }
+         });
+         team.totalPoints = totalPoints;
+         return team;
+       });
+       setData(teams);
+       const leaders = teams.reduce((acc, team) => {
+         if (acc.length === 0) {
+           acc.push(team);
+         }
+         acc.forEach((a, i) => {
+           if (a.totalPoints < team.totalPoints) {
+             acc = acc.splice(i, 1, team);
+           }
+           if (a.totalPoints === team.totalPoints) {
+             acc.push(team);
+           }
+         });
+         return acc;
+       }, []);
+       if (leaders.length === 1) {
+         setLeader(leaders[0]);
+       }
+     }
+    })
+  }, [])
+    const tableSize = data.length + 1
     const columnArr = createTribalsColumns(tribals.length);
     const columns = [
       { Header: "Team", accessor: "name", width: 180, className: "team" },
@@ -58,7 +105,7 @@ const Table = ({tribals, leader, data}) => {
           </div>
           <ReactTable
             className={"-highlight -striped"}
-            defaultPageSize={15}
+            defaultPageSize={tableSize}
             showPagination={false}
             data={data}
             columns={columns}

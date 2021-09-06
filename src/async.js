@@ -46,6 +46,18 @@ export const setTribal = points => {
 
 export const setTribes = points => {
     if (points.tribes) {
+        db.ref('/castaways').once("value", snap => {
+            const castaways = snap.val()
+            const updatedCastaways = castaways.map(castaway => {
+                points.tribes.forEach(tribe => {
+                    if (tribe.castaways.includes(castaway.value)) {
+                        castaway.tribe = tribe.tribeName
+                    }
+                })
+                return castaways
+            })
+            db.ref('/castaways').update(updatedCastaways)
+        })
         db.ref('/tribes').update(points.tribes)
     }
 }
@@ -56,8 +68,7 @@ export const setTeams = points => {
         points.teams.map(newTeam => {
             return currentData.map((team, i) => {
                 if (newTeam.value === team.value) {
-                    let newTotal = team.totalPoints + newTeam.points
-                    newTeam.totalPoints = newTotal
+
                     db.ref('/teams/' + i + '/').update(newTeam)
                     return 'success'
                 }

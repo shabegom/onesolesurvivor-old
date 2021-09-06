@@ -10,7 +10,7 @@ export const processFormObject = form => {
     eliminated,
     extinction,
     idolFound,
-      idolWon,
+    idolWon,
     immunity,
     reward
   } = form;

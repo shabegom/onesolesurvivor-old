@@ -5,12 +5,12 @@ export let tribals = []
 getTribals.once('value', snapshot => {
     let filterSnapshot = snapshot
         .val()
-        .map(s => {
+        filterSnapshot = filterSnapshot && filterSnapshot.map(s => {
             let value = s.value
             let label = s.label
             return { value, label }
         })
-    tribals = [{ value: 'reset', label: 'Choose which tribal' }, ...filterSnapshot]
+    tribals = filterSnapshot && [{ value: 'reset', label: 'Choose which tribal' }, ...filterSnapshot]
 })
 
 export let castawaysMultiSelect = []
@@ -21,7 +21,7 @@ export let allCastaways = []
 
 getCastaways.once('value', snapshot => {
     let castaways = snapshot.val()
-    castaways.forEach(castaway => {
+    castaways && castaways.forEach(castaway => {
         if (castaway.eliminated === 'FALSE') {
             castawayArr.push(castaway)
             allCastaways.push(castaway)

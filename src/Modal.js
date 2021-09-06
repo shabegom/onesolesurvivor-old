@@ -9,9 +9,10 @@ const LoginModal = () => {
   const onAuthStateChangeHandler = (setState, value) => {
     firebase.auth.auth.onAuthStateChanged((user) => {
       if (user) {
-        setIsOpen(false);
+          setIsOpen(false);
+          setState(value);
+
       }
-      setState(value);
     });
   };
   return (
