@@ -18,7 +18,7 @@ import MainForm from "./MainForm.js";
 
 //Helper functions
 import { processFormObject } from "./utils.js";
-import { setTribal, setTribes } from "./async.js";
+import { setTribal } from "./async.js";
 
 import { withFirebase } from "./Firebase";
 

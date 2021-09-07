@@ -75,36 +75,3 @@ export const setTeams = points => {
         })
     })
 }
-
-const updateCastaway = ( eliminatedCastawayArray, returnedFromExtinctionArray ) => {
-    getCastaways.once('value', snapshot => {
-        let dbCastaways = snapshot.val() 
-        let updatedCastaways = dbCastaways.map(castaway => {
-            if (eliminatedCastawayArray.includes(castaway.value)) {
-                castaway.eliminated = 'TRUE' 
-            }
-         else if (returnedFromExtinctionArray.includes(castaway.value)) {
-                castaway.eliminated = 'FALSE' 
-        }
-        return castaway
-        })
-        db.ref('/castaways/').update(updatedCastaways)
-    })
-}
-
-const setIdols = (idolFinds, idolAction) => {
-    getState.once('value', snapshot => {
-        let currentIdolHolders = snapshot.val().hasIdol
-        let allIdolHolders = currentIdolHolders ? currentIdolHolders.concat(idolFinds) : idolFinds
-        let removedIdolUsers = allIdolHolders.filter(idolHolder => {
-            if (idolAction) {
-            if (!idolAction.includes(idolHolder)) {
-                return idolHolder 
-            }
-            }
-            return idolHolder
-        })
-        db.ref('/state/hasIdol/').set(removedIdolUsers)
-    })
-}
-
