@@ -8,11 +8,15 @@ const ChoosePicks = () => {
     const firebase = useContext(FirebaseContext);
     
     useEffect(() => {
-        if (isSaved) {
-            setTimeout(() => {
-                setSaved(false)
-            }, 3000)
-        }
+      firebase.db.get.getTeams().once("value", snap => {
+        const { currentUser } = firebase.auth.auth;
+        const teams = snap.val() || []
+        teams.forEach(team => {
+          if (currentUser.uid === team.id) {
+              setSaved(true)
+            }
+        })
+          })
     }, [isSaved])
   const handlePicksFormSubmit = (data) => {
     const { currentUser } = firebase.auth.auth;
@@ -43,51 +47,58 @@ const ChoosePicks = () => {
     });
   };
   return (
-    <div className='login-modal-subhead'>
-      Hello! Thanks for signing up to play. Choose a team name and pick your
-      castaways. We'll contact you for payment. The game begins after Episode 2
-      airs.
-      <Form onSubmit={(data) => handlePicksFormSubmit(data)}>
-        <Input
-          name='team'
-          label='Team Name'
-          placeholder='Choose a team name'
-          required
-          value=''
-        />
-        <Select
-          name='pick-1'
-          label='First Pick'
-          options={castawaysDropDown}
-          required
-        />
-        <Select
-          name='pick-2'
-          label='Second Pick'
-          options={castawaysDropDown}
-          required
-        />
-        <Select
-          name='pick-3'
-          label='Third Pick'
-          options={castawaysDropDown}
-          required
-        />
-        <input
-          name='submit'
-          type='submit'
-          className='btn btn-primary'
-                  defaultValue='Save Picks!'
-                  value="Save Picks"
-        />
+       <> 
+    {!isSaved &&
+      <div>
+          <div className='login-modal-subhead'>
+          Hello! Thanks for signing up to play. Choose a team name and pick your
+          castaways. We'll contact you for payment. The game begins after Episode 2
+        airs.</div>
+          <Form onSubmit={(data) => handlePicksFormSubmit(data)}>
+            <Input
+              name='team'
+              label='Team Name'
+              placeholder='Choose a team name'
+              required
+              value=''
+            />
+            <Select
+              name='pick-1'
+              label='First Pick'
+              options={castawaysDropDown}
+              required
+            />
+            <Select
+              name='pick-2'
+              label='Second Pick'
+              options={castawaysDropDown}
+              required
+            />
+            <Select
+              name='pick-3'
+              label='Third Pick'
+              options={castawaysDropDown}
+              required
+            />
+            <input
+              name='submit'
+              type='submit'
+              className='btn btn-primary'
+              defaultValue='Save Picks!'
+              value='Save Picks'
+            />
       </Form>
+      </div>
+      }
       {isSaved && (
-        <div>
-          Picks Saved! You can change your pick up until the second episode.
-          Thanks!
+        <div className='flex-center'>
+          <h2>Picks Saved!</h2>
+          <p>Don't forget to send us your $20 buy in.</p>
+          <p>Teams will be revealed when everyone's picks are in.</p>
+          <p>you can contact us at: jeff@onesolesurvor.com</p>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
@@ -104,9 +115,8 @@ function randomPick(array=[], currentPicks=[]) {
     })
     if (options) {
         let pick = options[Math.floor(Math.random() * array.length)]
-        if (pick) {
             return pick.value
-        }
-    } 
-        return 'no-pick'
+    } else {
+      return 'manual-pick'
+    }
 }

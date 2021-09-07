@@ -43,7 +43,7 @@ const buildSummary = (summary) => {
   if (lastElement) {
     let eliminated = lastElement.eliminated;
     finalArr.push(
-      <p>
+      <p key="eliminated">
         {toTitleCase(eliminated.join("-").split("-").join(" "))} was eliminated
         😢
       </p>
@@ -51,7 +51,7 @@ const buildSummary = (summary) => {
     if (lastElement.idolFound) {
       lastElement.idolFound.forEach((idol) => {
         finalArr.push(
-          <p>
+          <p key="idolFound">
             {toTitleCase(idol.split("-").join(" "))} found an Idol (5 points) 🥇
           </p>
         );
@@ -60,7 +60,7 @@ const buildSummary = (summary) => {
     if (lastElement.idolWon) {
       lastElement.idolWon.forEach((idol) => {
         finalArr.push(
-          <p>
+          <p key="idolWon">
             {toTitleCase(idol.split("-").join(" "))} Won an Idol (+1 point) 🥇
           </p>
         );
@@ -69,18 +69,18 @@ const buildSummary = (summary) => {
     if (lastElement.immunity) {
       let immunityWinner = lastElement.immunity.join("-");
       finalArr.push(
-        <p>
+        <p key="immunity">
           {toTitleCase(immunityWinner.split("-").join(" "))} won Immunity (+5
           points) 📿
         </p>
       );
     }
     if (lastElement.reward) {
-      finalArr.push(<p>Reward Winners (+5 points):</p>);
+      finalArr.push(<p key="reward">Reward Winners (+5 points):</p>);
       finalArr.push(
         lastElement.reward.map((r) => {
           return (
-            <li style={{ marginLeft: "30px" }}>
+            <li key={r} style={{ marginLeft: "30px" }}>
               {toTitleCase(r.split("-").join(" "))} won Reward (+5 points) 🍔
             </li>
           );
@@ -88,7 +88,7 @@ const buildSummary = (summary) => {
       );
     }
     if (lastElement.idolActions) {
-      finalArr.push(<p>Used Idols:</p>);
+      finalArr.push(<p key="idolActions">Used Idols:</p>);
       finalArr.push(
         lastElement.idolActions.map((object) => {
           let action;
@@ -102,7 +102,7 @@ const buildSummary = (summary) => {
             action = "Burned their idol (0 points) 🔥";
           }
           return (
-            <li style={{ marginLeft: "30px" }}>
+            <li key={object.value} style={{ marginLeft: "30px" }}>
               {toTitleCase(object.value.split("-").join(" "))}: {action}
             </li>
           );

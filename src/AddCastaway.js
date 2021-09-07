@@ -1,10 +1,20 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Form, Input } from "formsy-react-components";
 import { FirebaseContext } from "./Firebase";
 
+
+let myform = null
+  const refCallback = (form) => {
+    myform = form;
+  };
+
+    const resetForm = () => {
+      console.log("Reset called"); // eslint-disable-line no-console
+      const { formsyForm } = myform;
+      formsyForm.reset();
+    };
+
 const AddCastaway = () => {
-  const [name, setName] = useState("");
-  const [tribe, setTribe] = useState("");
   const firebase = useContext(FirebaseContext);
   function handleCastawaySubmit(data) {
     const castawayObject = {
@@ -16,42 +26,20 @@ const AddCastaway = () => {
       const castaways = snap.val() || []
       castaways.push(castawayObject);
       firebase.db.set.setCastaways(castaways);
-      setName("");
-      setTribe("");
+      resetForm()
     });
-    firebase.db.get.getTribes().once("value", (snap) => {
-      const tribes = snap.val() || []
-      const tribeNames = tribes.reduce((acc, tribe) => {
-        acc.push(tribe.tribeName);
-        return acc;
-      }, []);
-      if (!tribeNames.includes(data.tribe)) {
-        tribes.push({
-          tribeName: data.tribe,
-          castaways: [castawayObject.value]
-        });
-      }
-      tribes.forEach((tribe) => {
-          if (data.tribe === tribe.tribeName && !tribe.castaways.includes(castawayObject.value)) {
-          tribe.castaways.push(castawayObject.value);
-        }
-      });
-        firebase.db.set.setTribes(tribes)
-    });
+
+    
   }
   return (
-    <Form className="form" onSubmit={handleCastawaySubmit}>
+    <Form className="form" onSubmit={handleCastawaySubmit} ref={refCallback}>
       <Input
         name='castaway'
         label='Name'
-        value={name}
-        onChange={(e) => setName(e.value)}
       />
       <Input
         name='tribe'
         label='Tribe'
-        value={tribe}
-        onChange={(e) => setTribe(e.value)}
       />
       <input
         name='submit'

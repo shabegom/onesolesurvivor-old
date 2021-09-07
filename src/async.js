@@ -33,7 +33,7 @@ export const setTribal = points => {
         let currentData = snapshot.val()
         currentData.map((tribal, i) => {
             if (points.value === tribal.value) {
-                db.ref('/tribals/' + i + '/').update(points)
+                db.ref('/tribals/' + i + '/').set(points)
                 setMerged(points.merged)
                 return 'success'
             }

@@ -49,8 +49,19 @@ function Login({onAuthStateChangeHandler, allowRegistration}) {
           className="btn btn-primary"
           formNoValidate={true}
           type="submit"
-          defaultValue="Login"
+          value="Login"
         />
+        {allowRegistration &&
+          <>
+          <br />
+        <input
+          className="btn btn-primary"
+          formNoValidate={true}
+        type="submit"
+          value="Register"
+        />
+        </>
+        }
       </Form>
     </div>
   ) : (

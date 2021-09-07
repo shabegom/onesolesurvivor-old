@@ -4,14 +4,13 @@ import Login from "./Login";
 import { FirebaseContext } from "./Firebase";
 
 const LoginModal = () => {
+  Modal.setAppElement('#root')
   const [modalIsOpen, setIsOpen] = useState(true);
   const firebase = useContext(FirebaseContext);
   const onAuthStateChangeHandler = (setState, value) => {
     firebase.auth.auth.onAuthStateChanged((user) => {
       if (user) {
           setIsOpen(false);
-          setState(value);
-
       }
     });
   };

@@ -59,7 +59,7 @@ imagePath = require(`./images/${castaway.value}.jpg`);
     }
     
       return (
-        <div className='castaway'>
+        <div key={castaway.value} className='castaway'>
           <img
             alt={castaway.value}
             src={imagePath}
@@ -89,7 +89,7 @@ const makeTribes = (tribes) => {
   tribes.forEach((tribe) => {
     let tribeArray = [];
     tribeArray.push(
-      <div>
+      <div key={tribe.tribeName}>
         <h3>{tribe.tribeName}</h3>
         <hr />
         <div

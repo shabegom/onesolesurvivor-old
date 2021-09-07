@@ -15,23 +15,22 @@ import AddCastaway from "./AddCastaway";
 const Selected = (props) => {
   const processSelection = (selection) => {
     let selections = [];
-      if (props.name === "tribal") {
-        selections.push(selection);
-      } else {
-        selections = selection.map((select) => {
-          return (
-            <div
-              onClick={() => {
-                props.handleRemove(props.name, select);
-              }}
-            >
-              {select} ❌
-            </div>
-          );
-        }
-          
+    if (props.name === "tribal") {
+      selections.push(selection);
+    } else {
+      selections = selection.map((select) => {
+        return (
+          <div
+            key={select}
+            onClick={() => {
+              props.handleRemove(props.name, select);
+            }}
+          >
+            {select} ❌
+          </div>
         );
-      }
+      });
+    }
     return selections;
   };
   return (
@@ -153,15 +152,17 @@ class MainForm extends Component {
       wonIdol: [],
       foundIdol: [],
       merged: false,
-      tribes: []
+      tribes: [],
+      finalTribal: false
     };
   }
 
   componentDidMount() {
     this.props.firebase.db.get.getRoot().once("value", (snap) => {
-      const { state, tribals } = snap.val();
+      let { state, tribals } = snap.val();
       const { started = "closed", numTribes = 2, merged = "false" } = state;
       if (tribals) {
+        tribals = tribals.filter(tribal => tribal.value !== 'final-tribal')
         const tribalOptions = [
           { value: "reset", label: "Choose which tribal" },
           ...tribals
@@ -195,16 +196,14 @@ class MainForm extends Component {
           this.setState({ hasIdol });
         }
         this.setState({
-                tribals: tribalOptions,
-              });
-      } 
-        this.setState({
-          started,
-          numTribes,
-          merged
-        })
-    
-
+          tribals: tribalOptions
+        });
+      }
+      this.setState({
+        started,
+        numTribes,
+        merged
+      });
     });
     this.props.firebase.auth.auth.onAuthStateChanged((authUser) => {
       const adminId = process.env.REACT_APP_ADMIN_UID;
@@ -215,11 +214,11 @@ class MainForm extends Component {
   }
 
   selectionChange = (stateKey) => (element, event) => {
-    if (event !== 'clear') {
+    if (event !== "clear") {
       if (this.state[stateKey] && this.state[stateKey][0]) {
-        this.setState((state) => ({ [stateKey]: [...state[stateKey], event] }))
+        this.setState((state) => ({ [stateKey]: [...state[stateKey], event] }));
       } else {
-        this.setState({ [stateKey]: [event] })
+        this.setState({ [stateKey]: [event] });
       }
     }
   };
@@ -266,7 +265,7 @@ class MainForm extends Component {
   handleCreateTribal = (event) => {
     this.props.firebase.db.get.getTribals().once("value", (snap) => {
       const tribals = snap.val() || [];
-      const count = tribals.length + 1
+      const count = tribals.length + 1;
       tribals.push({
         value: `tribal-${count}`,
         label: `Tribal ${count}`,
@@ -280,7 +279,7 @@ class MainForm extends Component {
   handleSelectTribal = (label, value) => {
     if (value === "reset") {
       const state = {
-        tribal: undefined,
+        tribal: "",
         eliminated: [],
         extinction: [],
         foundIdol: [],
@@ -291,9 +290,9 @@ class MainForm extends Component {
       };
       this.setState(state);
     } else {
-      const val = parseInt(value.split("-")[1]) - 1
+      const val = parseInt(value.split("-")[1]) - 1;
       this.props.firebase.db.get.getTribal(val).once("value", (snap) => {
-        const object = snap.val() || {}
+        const object = snap.val() || {};
         const { eliminated, extinction, foundIdol, wonIdol, reward, immunity } =
           object;
         this.setState({
@@ -317,56 +316,72 @@ class MainForm extends Component {
     data.merged = this.state.merged;
     data.immunity = this.state.immunity;
     data.reward = this.state.reward;
-    this.props.firebase.db.get.getCastaways().once("value", snap => {
-      const castaways = snap.val()
-      const updatedCastaways = []
-      castaways.forEach(castaway => {
-        this.state.tribes.forEach(tribe => {
+    this.props.firebase.db.get.getCastaways().once("value", (snap) => {
+      const castaways = snap.val();
+      const updatedCastaways = [];
+      castaways.forEach((castaway) => {
+        this.state.tribes.forEach((tribe) => {
           if (tribe.castaways.includes(castaway.value)) {
-              castaway.tribe = tribe.tribe
+            castaway.tribe = tribe.tribe;
           }
-        })
-        updatedCastaways.push(castaway)
-      })
-      this.props.firebase.db.set.setCastaways(updatedCastaways)
-    })
+        });
+        updatedCastaways.push(castaway);
+      });
+      this.props.firebase.db.set.setCastaways(updatedCastaways);
+    });
     this.props.processForm(data);
   };
 
   handleOpenPicks = () => {
     this.props.firebase.db.get.getState().update({ started: "open" });
-    this.setState({started: "open"})
+    this.setState({ started: "open" });
   };
 
   handleOpenSeason = () => {
     this.props.firebase.db.get.getState().update({ started: "started" });
-    this.setState({started: "started"})
+    this.setState({ started: "started" });
   };
 
   handleNewTribe = (name, value) => {
-    this.setState(state => {
-      let tribes = []
+    this.setState((state) => {
+      let tribes = [];
       if (state.tribes[name]) {
-        const castaways = state.tribes[name].castaways ? state.tribes[name].castaways : []
-        tribes[name] = {tribe: value, castaways}
+        const castaways = state.tribes[name].castaways
+          ? state.tribes[name].castaways
+          : [];
+        tribes[name] = { tribe: value, castaways };
       } else {
-        tribes.push({tribe: value, castaways: []})
+        tribes.push({ tribe: value, castaways: [] });
       }
-      return {tribes}
-    })
-  }
-  
+      return { tribes };
+    });
+  };
+
   handleNewTribeCastaway = (name, value) => {
-    this.setState(state => {
-      let tribes = []
+    this.setState((state) => {
+      let tribes = [];
       if (state.tribes[name]) {
-        tribes[name] = {tribe: state.tribes[name].tribe, castaways: value}
+        tribes[name] = { tribe: state.tribes[name].tribe, castaways: value };
       } else {
-        tribes.push({tribe: '', castaways: value})
+        tribes.push({ tribe: "", castaways: value });
       }
-      return {tribes}
-    })
-  }
+      return { tribes };
+    });
+  };
+
+  handleFinalTribal = () => {
+    if (this.state.finalTribal === true) {
+      this.setState({
+        tribal: "",
+        finalTribal: false
+      });
+    } else if (this.state.finalTribal === false) {
+      this.setState({
+        tribal: "final-tribal",
+        finalTribal: true
+      });
+    }
+  };
 
   render() {
     const displayForm = () => {
@@ -378,7 +393,7 @@ class MainForm extends Component {
           >
             Create New Tribal
           </button>
-          {this.state.tribals[0] && (
+          {this.state.tribals[0] && this.state.tribal !== "final-tribal" && (
             <Form onSubmit={(data) => this.processForm(data)}>
               <Selection
                 name='tribal'
@@ -462,7 +477,6 @@ class MainForm extends Component {
                   ""
                 )}
               </div>
-
               <div>
                 <input
                   type='checkbox'
@@ -484,6 +498,68 @@ class MainForm extends Component {
                   ""
                 )}
               </div>
+              <input
+                style={{ textAlign: "center" }}
+                className='btn btn-primary'
+                formNoValidate={true}
+                type='submit'
+                defaultValue='Submit'
+              />
+              <br />
+              <input
+                type='checkbox'
+                name='final-tribal'
+                checked={this.state.finalTribal}
+                value={this.state.finalTribal}
+                onChange={this.handleFinalTribal}
+              />{" "}
+              Final Tribal? <br />
+            </Form>
+          )}
+
+          {this.state.tribal === "final-tribal" && (
+            <Form onSubmit={(data) => {
+              this.props.firebase.db.get.getTribals().once("value", (snap) => {
+                const tribals = snap.val() || [];
+                const finalExists = tribals.filter(tribal => tribal.value === 'final-tribal')[0]
+                if (!finalExists) {
+                tribals.push({
+                  value: `final-tribal`,
+                  label: `Final Tribal`,
+                  complete: "false"
+                });
+                this.props.firebase.db.get.getTribals().update(tribals);
+                }
+
+              });
+              data.tribal = 'final-tribal'
+              this.processForm(data)
+            }}>
+              <input
+                type='checkbox'
+                name='final-tribal'
+                checked={this.state.finalTribal}
+                value={this.state.finalTribal}
+                onChange={this.handleFinalTribal}
+              />{" "}
+              Final Tribal? <br />
+              <Selection
+                name='immunity'
+                label='Who won?'
+                options={castawaysDropDown}
+                handleChange={this.selectionChange("immunity")}
+                selected={this.state.immunity}
+                handleRemove={this.handleRemove}
+              />
+              <Selection
+                name='eliminated'
+                label='Who lost?'
+                selected={this.state.eliminated}
+                options={castawaysDropDown}
+                required={true}
+                handleChange={this.selectionChange("eliminated")}
+                handleRemove={this.handleRemove}
+              />
               <input
                 style={{ textAlign: "center" }}
                 className='btn btn-primary'

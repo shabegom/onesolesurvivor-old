@@ -10,7 +10,6 @@ export default class Rules extends Component {
         <h3 style={{  }}>Scoring</h3>
         <div
           style={{
-            padding: "10px",
             display: "flex",
             flexDirection: "column",
             alignContent: "space-around",

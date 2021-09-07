@@ -56,7 +56,7 @@ const makeElimNames = (castaways) => {
               imagePath = require(`./images/placeholder.PNG`);
           }
         nameArray.push(
-          <div className='castaway'>
+          <div key={castaway.value} className='castaway'>
             <div style={{ background: "RGBA(0,0,0,.30)" }}>
               <img
                 alt={"eliminated-castaway" + castaway.value}
