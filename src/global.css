@@ -209,3 +209,7 @@ li {
 .form {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.eliminated-pick {
+  color: RGBA(178, 198, 230, 1)
+}

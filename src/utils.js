@@ -85,6 +85,8 @@ export const processFormObject = form => {
     });
     //the return object
     let obj = {};
+    obj["immunity"] = immunity
+    obj["reward"] = reward
     obj["eliminated"] = eliminated;
     obj["extinction"] = extinction ? extinction : [];
     obj["complete"] = true;

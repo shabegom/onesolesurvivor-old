@@ -43,13 +43,12 @@ class App extends Component {
         setState(value);
       }
     });
-  };
+};
   render() {
     const processForm = (formData) => {
       const points = processFormObject(formData);
       if (points) {
         setTribal(points);
-        setTribes(points);
         this.setState({ fireRedirect: true });
       }
     };

@@ -6,7 +6,7 @@ const Eliminated = () => {
     useEffect(() => {
         firebase.db.get.getRoot().once('value', snap => {
             let { castaways=[], tribals=[] } = snap.val()
-            if (castaways) {
+
                 castaways = castaways.filter((castaway) => {
                   let include = false;
                   tribals.forEach((tribal) => {
@@ -16,10 +16,9 @@ const Eliminated = () => {
                   });
                   return include;
                 });
-            }
             setCastaways(castaways)
         })
-    }, [])
+    }, [castaways])
     return (
         <>
             {castaways[0] &&
@@ -46,7 +45,6 @@ const makeElimNames = (castaways) => {
   let nameArray = [];
   if (castaways) {
     castaways.forEach((castaway) => {
-      if (castaway.eliminated === "TRUE") {
         let name = castaway.label;
         let imageName = castaway.value;
           let imagePath
@@ -81,7 +79,6 @@ const makeElimNames = (castaways) => {
             </div>
           </div>
         );
-      }
     });
   }
   return nameArray;

@@ -4,7 +4,6 @@ import {
   eliminatedCastawayDropDown,
   castawaysMultiSelect,
   castawaysDropDown,
-  tribals,
   idolActions
 } from "./data.js";
 
@@ -15,22 +14,24 @@ import AddCastaway from "./AddCastaway";
 
 const Selected = (props) => {
   const processSelection = (selection) => {
-    const selections = [];
-    selection.forEach((selection) => {
+    let selections = [];
       if (props.name === "tribal") {
         selections.push(selection);
       } else {
-        selections.push(
-          <div
-            onClick={() => {
-              props.handleRemove(props.name, selection);
-            }}
-          >
-            {selection} ❌
-          </div>
+        selections = selection.map((select) => {
+          return (
+            <div
+              onClick={() => {
+                props.handleRemove(props.name, select);
+              }}
+            >
+              {select} ❌
+            </div>
+          );
+        }
+          
         );
       }
-    });
     return selections;
   };
   return (
@@ -56,7 +57,6 @@ const Selection = (props) => {
         options={props.options}
         required={props.required || false}
         onChange={props.handleChange}
-        multiple={props.multiple}
       />
       <Selected
         selection={props.selected}
@@ -83,15 +83,17 @@ const Tribe = (props) => {
   return (
     <div>
       <Input
-        name={"tribe-name-" + props.number}
-        value=''
+        name={props.number.toString()}
+        value={props.tribeName}
         type='text'
         placeholder='Tribe Name'
+        onChange={props.handleNewTribe}
       />
       <Select
-        name={"tribe-members-" + props.number}
+        name={props.number.toString()}
         options={castawaysMultiSelect}
         help='hold command to choose multiple'
+        onChange={props.handleNewTribeCastaway}
         multiple
       />
     </div>
@@ -105,7 +107,9 @@ const DisplayBuffs = (props) => {
       <Tribe
         number={i}
         id={i}
-        onChange={props.handleChange}
+        tribeName={props.tribes[i] ? props.tribes[i].tribe : ""}
+        handleNewTribe={props.handleNewTribe}
+        handleNewTribeCastaway={props.handleNewTribeCastaway}
         selected={props.selected}
       />
     );
@@ -140,7 +144,16 @@ class MainForm extends Component {
       loggedIn: false,
       started: "closed",
       hasIdol: [],
-      tribal: []
+      tribal: undefined,
+      tribals: [],
+      eliminated: [],
+      extinction: [],
+      immunity: [],
+      reward: [],
+      wonIdol: [],
+      foundIdol: [],
+      merged: false,
+      tribes: []
     };
   }
 
@@ -149,6 +162,10 @@ class MainForm extends Component {
       const { state, tribals } = snap.val();
       const { started = "closed", numTribes = 2, merged = "false" } = state;
       if (tribals) {
+        const tribalOptions = [
+          { value: "reset", label: "Choose which tribal" },
+          ...tribals
+        ];
         let usedIdol = tribals.reduce((acc, tribal) => {
           if (tribal.idolUsers) {
             acc.push(tribal.idolUsers);
@@ -177,12 +194,17 @@ class MainForm extends Component {
         if (hasIdol) {
           this.setState({ hasIdol });
         }
-      }
-      this.setState({
-        started,
-        numTribes,
-        merged
-      });
+        this.setState({
+                tribals: tribalOptions,
+              });
+      } 
+        this.setState({
+          started,
+          numTribes,
+          merged
+        })
+    
+
     });
     this.props.firebase.auth.auth.onAuthStateChanged((authUser) => {
       const adminId = process.env.REACT_APP_ADMIN_UID;
@@ -193,10 +215,12 @@ class MainForm extends Component {
   }
 
   selectionChange = (stateKey) => (element, event) => {
-    if (this.state[stateKey]) {
-      this.setState({ [stateKey]: [...this.state[stateKey], event] });
-    } else {
-      this.setState({ [stateKey]: [event] });
+    if (event !== 'clear') {
+      if (this.state[stateKey] && this.state[stateKey][0]) {
+        this.setState((state) => ({ [stateKey]: [...state[stateKey], event] }))
+      } else {
+        this.setState({ [stateKey]: [event] })
+      }
     }
   };
 
@@ -249,29 +273,29 @@ class MainForm extends Component {
         complete: "false"
       });
       this.props.firebase.db.get.getTribals().update(tribals);
-      this.setState({ tribal: [`tribal-${count}`] });
-      window.location.reload()
+      this.setState({ tribals, tribal: `tribal-${count}` });
     });
   };
 
   handleSelectTribal = (label, value) => {
     if (value === "reset") {
       const state = {
-        tribal: [],
-        eliminated: "",
-        extinction: "",
+        tribal: undefined,
+        eliminated: [],
+        extinction: [],
         foundIdol: [],
         wonIdol: [],
-        reward: "",
-        immunity: ""
+        reward: [],
+        immunity: [],
+        merged: this.state.merged
       };
       this.setState(state);
     } else {
-      const val = value.split("-")[1];
+      const val = parseInt(value.split("-")[1]) - 1
       this.props.firebase.db.get.getTribal(val).once("value", (snap) => {
-        const array = snap.val() || [];
+        const object = snap.val() || {}
         const { eliminated, extinction, foundIdol, wonIdol, reward, immunity } =
-          array;
+          object;
         this.setState({
           tribal: [value],
           eliminated,
@@ -290,21 +314,60 @@ class MainForm extends Component {
     data.idolFound = this.state.foundIdol;
     data.idolWon = this.state.wonIdol;
     data.reward = this.state.reward;
-    data.merged = this.state.merged ? this.state.merged : this.props.merged;
+    data.merged = this.state.merged;
     data.immunity = this.state.immunity;
     data.reward = this.state.reward;
+    this.props.firebase.db.get.getCastaways().once("value", snap => {
+      const castaways = snap.val()
+      const updatedCastaways = []
+      castaways.forEach(castaway => {
+        this.state.tribes.forEach(tribe => {
+          if (tribe.castaways.includes(castaway.value)) {
+              castaway.tribe = tribe.tribe
+          }
+        })
+        updatedCastaways.push(castaway)
+      })
+      this.props.firebase.db.set.setCastaways(updatedCastaways)
+    })
     this.props.processForm(data);
-    this.props.firebase.auth.doSignOut();
   };
 
   handleOpenPicks = () => {
     this.props.firebase.db.get.getState().update({ started: "open" });
-    window.location.reload();
+    this.setState({started: "open"})
   };
 
   handleOpenSeason = () => {
     this.props.firebase.db.get.getState().update({ started: "started" });
+    this.setState({started: "started"})
   };
+
+  handleNewTribe = (name, value) => {
+    this.setState(state => {
+      let tribes = []
+      if (state.tribes[name]) {
+        const castaways = state.tribes[name].castaways ? state.tribes[name].castaways : []
+        tribes[name] = {tribe: value, castaways}
+      } else {
+        tribes.push({tribe: value, castaways: []})
+      }
+      return {tribes}
+    })
+  }
+  
+  handleNewTribeCastaway = (name, value) => {
+    this.setState(state => {
+      let tribes = []
+      if (state.tribes[name]) {
+        tribes[name] = {tribe: state.tribes[name].tribe, castaways: value}
+      } else {
+        tribes.push({tribe: '', castaways: value})
+      }
+      return {tribes}
+    })
+  }
+
   render() {
     const displayForm = () => {
       return (
@@ -315,13 +378,13 @@ class MainForm extends Component {
           >
             Create New Tribal
           </button>
-          {this.state.tribal && (
+          {this.state.tribals[0] && (
             <Form onSubmit={(data) => this.processForm(data)}>
               <Selection
                 name='tribal'
                 label='Select a Tribal to Edit'
                 selected={this.state.tribal}
-                options={tribals}
+                options={this.state.tribals}
                 handleChange={this.handleSelectTribal}
                 handleRemove={this.handleRemove}
               />
@@ -333,7 +396,6 @@ class MainForm extends Component {
                 required={true}
                 handleChange={this.selectionChange("eliminated")}
                 handleRemove={this.handleRemove}
-                multiple
               />
               <Selection
                 name='extinction'
@@ -343,7 +405,6 @@ class MainForm extends Component {
                 required={false}
                 handleChange={this.selectionChange("extinction")}
                 handleRemove={this.handleRemove}
-                multiple
               />
               <Selection
                 name='foundIdol'
@@ -352,7 +413,6 @@ class MainForm extends Component {
                 options={castawaysDropDown}
                 handleChange={this.selectionChange("foundIdol")}
                 handleRemove={this.handleRemove}
-                multiple
               />
               <Selection
                 name='wonIdol'
@@ -361,7 +421,6 @@ class MainForm extends Component {
                 options={castawaysDropDown}
                 handleChange={this.selectionChange("wonIdol")}
                 handleRemove={this.handleRemove}
-                multiple
               />
               {this.state.hasIdol || this.state.foundIdol ? (
                 <h3>Did anyone use their idol?</h3>
@@ -397,7 +456,6 @@ class MainForm extends Component {
                       handleChange={this.selectionChange("reward")}
                       selected={this.state.reward}
                       handleRemove={this.handleRemove}
-                      multiple
                     />
                   </div>
                 ) : (
@@ -415,10 +473,12 @@ class MainForm extends Component {
                 Drop your buffs? <br />
                 {this.state.buffs ? (
                   <DisplayBuffs
+                    tribes={this.state.tribes}
                     numTribes={this.state.numTribes}
-                    handleChange={this.selectionChange}
                     addTribe={this.handleAddTribe}
                     removeTribe={this.handleRemoveTribe}
+                    handleNewTribe={this.handleNewTribe}
+                    handleNewTribeCastaway={this.handleNewTribeCastaway}
                   />
                 ) : (
                   ""

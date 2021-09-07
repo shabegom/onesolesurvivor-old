@@ -20,7 +20,7 @@ const createTribalsColumns = count => {
   let finalArr = [];
   const recur = () => {
     if (count !== 0) {
-      let tribalNum = count - 1
+      let tribalNum = count
       finalArr.unshift({
         Header: "Tribal " + count, 
         accessor: "tribal-" + tribalNum,
@@ -43,22 +43,40 @@ const Table = () => {
   const [data, setData] = useState([])
   useEffect(() => {
     firebase.db.get.getRoot().once("value", snap => {
-      let { teams, tribals } = snap.val()
+      let { teams=[], tribals=[] } = snap.val()
       tribals && setTribals(tribals)
       if (teams) {
        teams = teams.map((team) => {
          let totalPoints = 0;
+         let eliminated = []
+         let picks = []
          tribals.forEach((tribal) => {
+           if (tribal.eliminated) {
+            eliminated.push(tribal.eliminated);
+          }
            if (tribal.teams) {
              tribal.teams.forEach((teamScore) => {
                if (team.name === teamScore.name) {
                  team[tribal.value] = teamScore.points;
                  totalPoints += teamScore.points;
                }
+               
              });
+             
+           }
+         });
+         team.picks.forEach((pick) => {
+           if (eliminated.flat().includes(pick)) {
+             picks.push(
+               <span className='eliminated-pick'>{toTitleCase(pick)}</span>,
+               " "
+             );
+           } else {
+             picks.push(toTitleCase(pick), " ");
            }
          });
          team.totalPoints = totalPoints;
+         team.picks = picks
          return team;
        });
        setData(teams);
@@ -67,17 +85,18 @@ const Table = () => {
            acc.push(team);
          }
          acc.forEach((a, i) => {
-           if (a.totalPoints < team.totalPoints) {
-             acc = acc.splice(i, 1, team);
+           if (team.totalPoints > a.totalPoints) {
+             let newLeader = acc.splice(i, 1, team);
+             acc = newLeader
            }
-           if (a.totalPoints === team.totalPoints) {
+           if (a.id !== team.id && a.totalPoints === team.totalPoints) {
              acc.push(team);
            }
          });
          return acc;
        }, []);
        if (leaders.length === 1) {
-         setLeader(leaders[0]);
+         setLeader(leaders[0].name);
        }
      }
     })
@@ -115,3 +134,9 @@ const Table = () => {
   }
 
 export default Table;
+
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+}

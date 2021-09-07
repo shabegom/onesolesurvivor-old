@@ -34,9 +34,7 @@ export const setTribal = points => {
         currentData.map((tribal, i) => {
             if (points.value === tribal.value) {
                 db.ref('/tribals/' + i + '/').update(points)
-                updateCastaway(points.eliminated, points.extinction)
                 setMerged(points.merged)
-                setIdols([...points.foundIdol, ...points.wonIdol], points.idolUsers)
                 return 'success'
             }
             return 'failure'

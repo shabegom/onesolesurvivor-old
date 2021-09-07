@@ -16,7 +16,7 @@ getTribals.once('value', snapshot => {
 export let castawaysMultiSelect = []
 export let castawaysDropDown = []
 export let castawayArr = []
-export let eliminatedCastawayDropDown = [{value: '', label: 'Choose a loser'}]
+export let eliminatedCastawayDropDown = [{value: 'clear', label: 'Choose a loser'}]
 export let allCastaways = []
 
 getCastaways.once('value', snapshot => {
@@ -35,7 +35,7 @@ getCastaways.once('value', snapshot => {
         return { label, value }
     })
     castawaysDropDown = [
-        { value: '', label: 'Choose a castaway' },
+        { value: 'clear', label: 'Choose a castaway' },
         ...castawaysMultiSelect
     ]
 })
