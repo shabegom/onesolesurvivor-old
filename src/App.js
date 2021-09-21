@@ -18,150 +18,37 @@ import MainForm from "./MainForm.js";
 
 //Helper functions
 import { processFormObject } from "./utils.js";
-import {
-  // getState,
-  // handleIdolFound,
-  // setMerged,
-  setTribal,
-  setTeams,
-  setTribes,
-  getRoot
-} from "./async.js";
+import { setTribal } from "./async.js";
 
-const pageStyle = {
-  background:
-    "linear-gradient(rgba(92, 140, 180, 1.00),rgba(0, 91, 144, 1.00),rgba(60, 43, 87, 1.00))",
-  color: "RGBA(233,227,201,1.00)",
-  textShadow: "1px 1px 2px RGBA(73,53,66,1.00)"
-};
+import { withFirebase } from "./Firebase";
+
+const pageStyle = {};
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      showLogin: true,
-      loggedIn: false,
-      failed: false,
-      merged: false,
-      buffs: false,
-      hasIdol: [],
-      numTribes: 2,
+
       fireRedirect: false,
-      tableData: [],
-      leader: "",
-      tribes: [],
-      castaways: "",
-      summary: {}
+
     };
-
-    getRoot.once("value", snapshot => {
-      let root = snapshot.val();
-      let { castaways, state, teams, tribals, tribes } = root;
-      let { hasIdol, merged, numTribes } = state;
-      let leader;
-      let finalArr = [];
-      let summaries = tribals
-        .filter(tribal => tribal.summary)
-        .map(tribal => tribal.summary);
-
-      let totalPoints = teams.map(team => {
-        return team.totalPoints;
-      });
-      let highscore = totalPoints.reduce((prev, current) => {
-        return current > prev ? current : prev;
-      });
-
-      //get tribal data into the table array
-      let possibleLeaders = [];
-      teams &&
-        teams.forEach(team => {
-          if (team.totalPoints === highscore && team.totalPoints !== 0) {
-            possibleLeaders.push(team.name);
-          }
-          let pickNames = [];
-          let teamObj = {};
-          tribes &&
-            tribes.forEach(tribe => {
-              let isEliminated = [];
-              let castawayNames = [];
-              castaways &&
-                castaways.forEach(castaway => {
-                  tribe &&
-                    tribe.castaways.forEach(value => {
-                      if (castaway.value === value) {
-                        isEliminated.push(castaway.eliminated);
-                        castawayNames.push(castaway.label);
-                      }
-                    });
-                });
-              tribe["eliminated"] = isEliminated;
-              tribe["names"] = castawayNames;
-            });
-
-          castaways &&
-            castaways.forEach(castaway => {
-              team &&
-                team.picks.forEach(pick => {
-                  if (pick === castaway.value) {
-                    if (castaway.eliminated === "TRUE") {
-                      pickNames.push(
-                        <span
-                          style={{
-                            color: "RGBA(145,147,134,.30)",
-                            filter: "none"
-                          }}
-                        >
-                          {castaway.label.split(" ")[0]}
-                        </span>,
-                        " "
-                      );
-                    } else {
-                      pickNames.push(castaway.label.split(" ")[0], " ");
-                    }
-                  }
-                });
-            });
-          teamObj["name"] = team.name;
-          teamObj["totalPoints"] = team.totalPoints;
-          teamObj["picks"] = pickNames;
-          tribals.forEach(tribal => {
-            if (tribal.teams) {
-              tribal.teams.forEach(tribalTeam => {
-                if (team.value === tribalTeam.value) {
-                  teamObj[tribal.value] = tribalTeam.points;
-                }
-              });
-            }
-          });
-          finalArr.push(teamObj);
-        });
-      if (possibleLeaders.length === 1) {
-        leader = possibleLeaders[0];
-      }
-
-      this.setState({
-        hasIdol,
-        merged,
-        numTribes,
-        leader,
-        tableData: finalArr,
-        castaways,
-        tribes,
-        tribals,
-        summary: summaries
-      });
-    });
   }
 
   handleLogin = () => this.setState({ loggedIn: true, showLogin: false });
 
+  onAuthStateChangeHandler = (setState, value) => {
+    this.props.firebase.auth.auth.onAuthStateChanged((user) => {
+      const adminId = process.env.REACT_APP_ADMIN_UID;
+      if (user && user.uid === adminId) {
+        setState(value);
+      }
+    });
+};
   render() {
-    const processForm = formData => {
+    const processForm = (formData) => {
       const points = processFormObject(formData);
       if (points) {
         setTribal(points);
-        setTeams(points);
-        setTribes(points);
         this.setState({ fireRedirect: true });
       }
     };
@@ -169,7 +56,7 @@ class App extends Component {
     const baseUrl = process.env.PUBLIC_URL;
 
     return (
-      <div className="App" style={pageStyle}>
+      <div className='App' style={pageStyle}>
         <Header />
         <CastawaysContext.Provider value={castaways}>
           <Router>
@@ -177,28 +64,20 @@ class App extends Component {
               <Route
                 exact={true}
                 path={baseUrl + "/"}
-                render={props => (
-                  <Home
-                    summary={this.state.summary}
-                    tribes={this.state.tribes}
-                    leader={this.state.leader}
-                    tableData={this.state.tableData}
-                    tribals={this.state.tribals}
-                    castaways={this.state.castaways}
-                  />
-                )}
+                render={(props) => <Home />}
               />
               <Route
                 exact={true}
                 path={baseUrl + "/admin"}
-                render={props => (
+                render={(props) => (
                   <div style={{ padding: "10px" }}>
-                    <Login />
+                    <Login
+                      onAuthStateChangeHandler={this.onAuthStateChangeHandler}
+                      allowRegistration={false}
+                    />
                     <MainForm
                       processForm={processForm}
                       fireRedirect={this.state.fireRedirect}
-                      merged={this.state.merged}
-                      hasIdol={this.state.hasIdol}
                     />
                   </div>
                 )}
@@ -212,4 +91,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withFirebase(App);

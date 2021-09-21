@@ -10,7 +10,7 @@ export const processFormObject = form => {
     eliminated,
     extinction,
     idolFound,
-      idolWon,
+    idolWon,
     immunity,
     reward
   } = form;
@@ -85,6 +85,13 @@ export const processFormObject = form => {
     });
     //the return object
     let obj = {};
+    if (immunity) {
+obj["immunity"] = immunity;
+    }
+    if (reward) {
+      obj["reward"] = reward;
+}
+
     obj["eliminated"] = eliminated;
     obj["extinction"] = extinction ? extinction : [];
     obj["complete"] = true;

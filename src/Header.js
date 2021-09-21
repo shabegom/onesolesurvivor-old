@@ -1,20 +1,24 @@
 import React, { Component } from 'react'
-import logo from './survivor-logo.png'
+import logo from './survivor-logo.WEBP'
 
 const imageStyle = {
-    display: 'block',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    maxWidth: '300px',
-    width: '50%',
-    paddingTop: '10px'
+    width: "20%",
+    minWidth: "180px"
 }
 
 class Header extends Component {
     render() {
         return (
-            <div>
-                <img alt='Survivor Logo' src={logo} style={imageStyle} />
+            <div className="header">
+                
+                <div className="site-header">
+                    <a className="header-link" href="/">
+                    <h1 className="site-name">One Sole Survivor</h1>
+                    </a>
+                </div>
+                                <img alt='Survivor Logo' src={logo} style={imageStyle} className="survivor-logo" />
+                    <h2 className="subhead">Out pick, Out watch, Out score </h2>
+                    
             </div>
         )
     }
