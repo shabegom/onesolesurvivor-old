@@ -52,7 +52,7 @@ const makeTribeNames = (tribe) => {
     // let imageName = name.toLowerCase().replace(/ /g, '-')
     let imagePath;
     try {
-imagePath = require(`./images/${castaway.value}.jpg`);
+imagePath = require(`./images/${castaway.value}.webp`);
     }
     catch (err) {
       imagePath= require('./images/placeholder.PNG')

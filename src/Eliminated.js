@@ -49,7 +49,7 @@ const makeElimNames = (castaways) => {
         let imageName = castaway.value;
           let imagePath
           try {
-              imagePath = require(`./images/${imageName}.jpg`);
+              imagePath = require(`./images/${imageName}.webp`);
             
           }
           catch (e) {
