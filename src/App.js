@@ -35,7 +35,11 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.props.firebase.auth.auth.currentUser.reload()
+    const user = firebase.auth().currentUser;
+
+    if (user) {
+      this.props.firebase.auth.auth.reload(user)
+    }
   }
 
   handleLogin = () => this.setState({ loggedIn: true, showLogin: false });
@@ -47,7 +51,7 @@ class App extends Component {
         setState(value);
       }
     });
-};
+  };
   render() {
     const processForm = (formData) => {
       const points = processFormObject(formData);
