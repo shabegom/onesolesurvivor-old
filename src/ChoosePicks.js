@@ -107,7 +107,7 @@ function randomPick(array = [], currentPicks = []) {
   const options = array.filter(pick => {
     let include = true
     currentPicks.forEach(choice => {
-      if (pick.value === choice || pick.value === "clear" || picks.value === "sara-wilson" || picks.value === "eric-abraham") {
+      if (pick.value === choice || pick.value === "clear" || pick.value === "sara-wilson" || pick.value === "eric-abraham") {
         include = false
       }
     })
