@@ -35,7 +35,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const user = firebase.auth().currentUser;
+    const user = this.props.firebase.auth.auth.currentUser;
 
     if (user) {
       this.props.firebase.auth.auth.reload(user)
