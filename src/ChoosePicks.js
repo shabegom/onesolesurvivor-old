@@ -5,19 +5,19 @@ import { FirebaseContext } from "./Firebase";
 
 const ChoosePicks = () => {
   const [isSaved, setSaved] = useState(false);
-    const firebase = useContext(FirebaseContext);
-    
-    useEffect(() => {
-      firebase.db.get.getTeams().once("value", snap => {
-        const { currentUser } = firebase.auth.auth;
-        const teams = snap.val() || []
-        teams.forEach(team => {
-          if (currentUser.uid === team.id) {
-              setSaved(true)
-            }
-        })
-          })
-    }, [isSaved])
+  const firebase = useContext(FirebaseContext);
+
+  useEffect(() => {
+    firebase.db.get.getTeams().once("value", snap => {
+      const { currentUser } = firebase.auth.auth;
+      const teams = snap.val() || []
+      teams.forEach(team => {
+        if (currentUser.uid === team.id) {
+          setSaved(true)
+        }
+      })
+    })
+  }, [isSaved])
   const handlePicksFormSubmit = (data) => {
     const { currentUser } = firebase.auth.auth;
     const teamObject = {
@@ -35,7 +35,7 @@ const ChoosePicks = () => {
         return acc;
       }, undefined);
       teamObject.value = `team-${teams.length}`;
-        if (existingTeam) {
+      if (existingTeam) {
         teams.splice(existingTeam, 1, teamObject);
         firebase.db.set.setTeams(teams)
         setSaved(true);
@@ -47,13 +47,13 @@ const ChoosePicks = () => {
     });
   };
   return (
-       <> 
-    {!isSaved &&
-      <div>
+    <>
+      {!isSaved &&
+        <div>
           <div className='login-modal-subhead'>
-          Hello! Thanks for signing up to play. Choose a team name and pick your
-          castaways. We'll contact you for payment. The game begins after Episode 2
-        airs.</div>
+            Hello! Thanks for signing up to play. Choose a team name and pick your
+            castaways. We'll contact you for payment. The game begins after Episode 2
+            airs.</div>
           <Form onSubmit={(data) => handlePicksFormSubmit(data)}>
             <Input
               name='team'
@@ -87,8 +87,8 @@ const ChoosePicks = () => {
               defaultValue='Save Picks!'
               value='Save Picks'
             />
-      </Form>
-      </div>
+          </Form>
+        </div>
       }
       {isSaved && (
         <div className='flex-center'>
@@ -103,20 +103,20 @@ const ChoosePicks = () => {
 };
 
 export default ChoosePicks;
-function randomPick(array=[], currentPicks=[]) {
-    const options = array.filter(pick => {
-        let include = true
-        currentPicks.forEach(choice => {
-            if (pick.value === choice || pick.value === "clear") {
-                include = false
-            }
-        })
-        return include
+function randomPick(array = [], currentPicks = []) {
+  const options = array.filter(pick => {
+    let include = true
+    currentPicks.forEach(choice => {
+      if (pick.value === choice || pick.value === "clear" || picks.value === "sara-wilson" || picks.value === "eric-abraham") {
+        include = false
+      }
     })
-    if (options) {
-        let pick = options[Math.floor(Math.random() * array.length)]
-            return pick.value
-    } else {
-      return 'manual-pick'
-    }
+    return include
+  })
+  if (options) {
+    let pick = options[Math.floor(Math.random() * array.length)]
+    return pick.value
+  } else {
+    return 'manual-pick'
+  }
 }
