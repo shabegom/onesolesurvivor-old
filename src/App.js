@@ -34,6 +34,10 @@ class App extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.firebase.auth.auth.currentUser.reload()
+  }
+
   handleLogin = () => this.setState({ loggedIn: true, showLogin: false });
 
   onAuthStateChangeHandler = (setState, value) => {
