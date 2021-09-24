@@ -20,7 +20,6 @@ function Login({onAuthStateChangeHandler, allowRegistration}) {
       
         // Handle Errors here.
         var errorCode = error.code;
-        var errorMessage = error.message;
         if (errorCode === "auth/user-not-found" && allowRegistration) {
           firebase.auth.auth.createUserWithEmailAndPassword(email, password)
         }
