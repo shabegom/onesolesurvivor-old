@@ -27,9 +27,9 @@ function Login({onAuthStateChangeHandler, allowRegistration}) {
         else if (errorCode === "auth/wrong-password") {
           setFailed(true);
           alert("Wrong password.");
-        } else {
+        }
+        else {
           setFailed(true);
-          alert(errorMessage);
         }
         console.log(error);
       });
