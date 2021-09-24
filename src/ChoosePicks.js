@@ -56,6 +56,7 @@ const ChoosePicks = () => {
             airs.</div>
           <Form onSubmit={(data) => handlePicksFormSubmit(data)}>
             <Input
+              style={{fontFamily: 'arial'}}
               name='team'
               label='Team Name'
               placeholder='Choose a team name'

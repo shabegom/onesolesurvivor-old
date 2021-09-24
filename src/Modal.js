@@ -22,6 +22,9 @@ const LoginModal = () => {
           <p className='login-modal-subhead'>
             Enter an email and password to login, or register an account
           </p>
+          <p>
+            <strong>This is a closed pool. If you have not been invited by the admins please do not register. If you are not on the list of invited participants, your account will be disabled.</strong>
+            </p>
         </>
 
         <Login
