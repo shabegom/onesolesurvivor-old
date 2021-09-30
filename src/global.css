@@ -62,6 +62,7 @@ li {
 
 .team {
   font-family: "survives";
+  font-size: 14px;
 }
 
 .leader {
@@ -211,5 +212,5 @@ li {
 }
 
 .eliminated-pick {
-  color: RGBA(178, 198, 230, 1)
+  color: RGBA(178, 198, 230, 1);
 }
