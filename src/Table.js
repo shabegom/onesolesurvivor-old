@@ -108,7 +108,7 @@ const Table = () => {
       }
     });
   }, []);
-  const tableSize = data.length + 1;
+  const tableSize = 19;
   const columnArr = createTribalsColumns(tribals.length);
   const columns = [
     { Header: "Team", key: 'name', accessor: "name", width: 180, className: "team" },
