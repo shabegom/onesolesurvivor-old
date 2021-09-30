@@ -120,7 +120,7 @@ const Table = () => {
       Header: "Team",
       key: "name",
       accessor: "name",
-      width: 180,
+      width: 300,
       className: "team"
     },
     {
