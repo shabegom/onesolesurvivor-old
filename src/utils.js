@@ -96,6 +96,7 @@ obj["immunity"] = immunity;
     obj["extinction"] = extinction ? extinction : [];
     obj["complete"] = true;
     obj["value"] = tribal;
+    obj["num"] = tribal.split("-")[1]
     obj["points"] = points;
     obj["tribes"] = buffDrops;
     obj["teams"] = teamsScores;
