@@ -2,7 +2,6 @@ import React, { Component } from "react"
 import { Form, Select, Input } from "formsy-react-components"
 import { Redirect } from "react-router"
 import { withFirebase } from "./Firebase"
-// import { CastawaysContext } from "./Castaways";
 import AddCastaway from "./AddCastaway"
 
 const Selected = (props) => {

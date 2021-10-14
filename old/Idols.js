@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { idolActions } from './data.js'
+//import { idolActions } from './data.js'
 import { Select } from 'formsy-react-components'
 
 class Idols extends Component {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Select, Input } from 'formsy-react-components'
-import { castawaysMultiSelect } from './data.js'
+//import { castawaysMultiSelect } from './data.js'
 
 class Buffs extends Component {
 	render() {

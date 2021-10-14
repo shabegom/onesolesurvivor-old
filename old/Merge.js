@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { castawaysMultiSelect, castawaysDropDown } from './data.js'
+//import { castawaysMultiSelect, castawaysDropDown } from './data.js'
 import { Select } from 'formsy-react-components'
 
 class Merge extends Component {
