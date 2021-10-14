@@ -1,4 +1,4 @@
-const firebase = require('firebase/app')
+const app = require('firebase/app')
 require('firebase/auth')
 require('firebase/database')
 
