@@ -97,9 +97,9 @@ obj["immunity"] = immunity;
     obj["complete"] = true;
     obj["value"] = tribal;
     obj["num"] = tribal.split("-")[1]
-    obj["points"] = points;
+    obj["points"] = Object.assign({}, points);
     obj["tribes"] = buffDrops;
-    obj["teams"] = teamsScores;
+    obj["teams"] = Object.assign({}, teamsScores);
     obj["summary"] = { eliminated };
     obj["merged"] = merged;
     obj["idolUsers"] = idolActioners.map(actioner => actioner.value);
