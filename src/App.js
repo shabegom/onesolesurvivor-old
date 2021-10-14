@@ -55,7 +55,16 @@ class App extends Component {
     const processForm = (formData) => {
       const points = processFormObject(formData);
       if (points) {
-        this.props.firebase.db.set.setTribal(points)
+        this.props.firebase.db.get.getTribals().once("value", snap => {
+          const tribals = snap.val()
+          const updatedTribals = tribals.map((tribal, i) => {
+             if (i === points.num - 1) {
+                tribal = points
+             }
+            return tribal
+          })
+          this.props.firebase.db.set.setTribals(updatedTribals)
+        })
         points.merged && this.props.firebase.db.set.setMerged(points.merged)
       
         this.setState({ fireRedirect: true });

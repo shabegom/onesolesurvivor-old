@@ -38,6 +38,7 @@ function Firebase(auth, db) {
   const setCastaways = updatedCastaways =>
     getCastaways().update(updatedCastaways);
   const setTribal = points => getTribal(points.num - 1).set(points);
+  const setTribals = updatedTribals => getTribals().set(updatedTribals)
   const setMerged = isMerged => getState().update({ "/merged/": isMerged });
   const setIdols = updatedIdols =>
     getState().update({ "/hasIdol/": updatedIdols });
@@ -60,6 +61,7 @@ function Firebase(auth, db) {
       set: {
         setCastaways,
         setTribal,
+        setTribals,
         setMerged,
         setIdols,
         setTeams,
