@@ -18,7 +18,6 @@ import MainForm from "./MainForm.js";
 
 //Helper functions
 import { processFormObject } from "./utils.js";
-import { setTribal } from "./async.js";
 
 import { withFirebase } from "./Firebase";
 
@@ -56,7 +55,9 @@ class App extends Component {
     const processForm = (formData) => {
       const points = processFormObject(formData);
       if (points) {
-        setTribal(points);
+        this.props.firebase.db.set.setTribal(points)
+        points.merged && this.props.firebase.db.set.setMerged(points.merged)
+      
         this.setState({ fireRedirect: true });
       }
     };
