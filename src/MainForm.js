@@ -153,13 +153,14 @@ class MainForm extends Component {
       foundIdol: [],
       merged: false,
       tribes: [],
-      finalTribal: false
+      finalTribal: false,
+      castaways: []
     };
   }
 
   componentDidMount() {
     this.props.firebase.db.get.getRoot().once("value", (snap) => {
-      let { state, tribals } = snap.val();
+      let { state, tribals, castaways } = snap.val();
       const { started = "closed", numTribes = 2, merged = "false" } = state;
       if (tribals) {
         tribals = tribals.filter(tribal => tribal.value !== 'final-tribal')
@@ -167,6 +168,10 @@ class MainForm extends Component {
           { value: "reset", label: "Choose which tribal" },
           ...tribals
         ];
+        const castawaysOptions = [
+          { value: 'clear', label: 'Choose a castaway' },
+          ...castaways
+        ]
         let usedIdol = tribals.reduce((acc, tribal) => {
           if (tribal.idolUsers) {
             acc.push(tribal.idolUsers);
@@ -196,7 +201,8 @@ class MainForm extends Component {
           this.setState({ hasIdol });
         }
         this.setState({
-          tribals: tribalOptions
+          tribals: tribalOptions,
+          castaways: castawaysOptions
         });
       }
       this.setState({
@@ -269,7 +275,7 @@ class MainForm extends Component {
       tribals.push({
         value: `tribal-${count}`,
         label: `Tribal ${count}`,
-        complete: "false"
+        complete: false
       });
       this.props.firebase.db.get.getTribals().update(tribals);
       this.setState({ tribals, tribal: `tribal-${count}` });
@@ -407,25 +413,16 @@ class MainForm extends Component {
                 name='eliminated'
                 label='Who was eliminated?'
                 selected={this.state.eliminated}
-                options={castawaysDropDown}
+                options={this.state.castaways}
                 required={true}
                 handleChange={this.selectionChange("eliminated")}
-                handleRemove={this.handleRemove}
-              />
-              <Selection
-                name='extinction'
-                label='Did anyone return from extinction?'
-                selected={this.state.extinction}
-                options={eliminatedCastawayDropDown}
-                required={false}
-                handleChange={this.selectionChange("extinction")}
                 handleRemove={this.handleRemove}
               />
               <Selection
                 name='foundIdol'
                 label='Anyone find an idol?'
                 selected={this.state.foundIdol}
-                options={castawaysDropDown}
+                options={this.state.castaways}
                 handleChange={this.selectionChange("foundIdol")}
                 handleRemove={this.handleRemove}
               />
@@ -433,7 +430,7 @@ class MainForm extends Component {
                 name='wonIdol'
                 label='Anyone win an idol?'
                 selected={this.state.wonIdol}
-                options={castawaysDropDown}
+                options={this.state.castaways}
                 handleChange={this.selectionChange("wonIdol")}
                 handleRemove={this.handleRemove}
               />
@@ -459,7 +456,7 @@ class MainForm extends Component {
                     <Selection
                       name='immunity'
                       label='Who won immunity?'
-                      options={castawaysDropDown}
+                      options={this.state.castaways}
                       handleChange={this.selectionChange("immunity")}
                       selected={this.state.immunity}
                       handleRemove={this.handleRemove}
@@ -467,7 +464,7 @@ class MainForm extends Component {
                     <Selection
                       name='reward'
                       label='Who won reward?'
-                      options={castawaysDropDown}
+                      options={this.state.castaways}
                       handleChange={this.selectionChange("reward")}
                       selected={this.state.reward}
                       handleRemove={this.handleRemove}
@@ -546,7 +543,7 @@ class MainForm extends Component {
               <Selection
                 name='immunity'
                 label='Who won?'
-                options={castawaysDropDown}
+                options={this.state.castaways}
                 handleChange={this.selectionChange("immunity")}
                 selected={this.state.immunity}
                 handleRemove={this.handleRemove}
@@ -555,7 +552,7 @@ class MainForm extends Component {
                 name='eliminated'
                 label='Who lost?'
                 selected={this.state.eliminated}
-                options={castawaysDropDown}
+                options={this.state.castaways}
                 required={true}
                 handleChange={this.selectionChange("eliminated")}
                 handleRemove={this.handleRemove}
