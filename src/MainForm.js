@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import { Form, Select, Input } from "formsy-react-components";
 import {
-  eliminatedCastawayDropDown,
-  castawaysMultiSelect,
-  castawaysDropDown,
   idolActions
 } from "./data.js";
 
@@ -90,7 +87,7 @@ const Tribe = (props) => {
       />
       <Select
         name={props.number.toString()}
-        options={castawaysMultiSelect}
+        options={props.castaways.shift()}
         help='hold command to choose multiple'
         onChange={props.handleNewTribeCastaway}
         multiple
@@ -110,6 +107,7 @@ const DisplayBuffs = (props) => {
         handleNewTribe={props.handleNewTribe}
         handleNewTribeCastaway={props.handleNewTribeCastaway}
         selected={props.selected}
+        castaways={props.castaways}
       />
     );
   }
@@ -485,6 +483,7 @@ class MainForm extends Component {
                 {this.state.buffs ? (
                   <DisplayBuffs
                     tribes={this.state.tribes}
+                    castaways={this.state.castaways}
                     numTribes={this.state.numTribes}
                     addTribe={this.handleAddTribe}
                     removeTribe={this.handleRemoveTribe}
