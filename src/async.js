@@ -11,7 +11,7 @@ const config = {
     messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
   };
   app.initializeApp(config);
-  const auth = app.auth();
+
   const db = app.database();
 
 export const fbState = db.ref('/state')
