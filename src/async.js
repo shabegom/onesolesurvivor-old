@@ -2,15 +2,17 @@ const firebase = require('firebase/app')
 require('firebase/auth')
 require('firebase/database')
 
-// Set the configuration for your app
-// TODO: Replace with your project's config object
-const config = {
-    databaseURL: process.env.REACT_APP_DATABASE_URL
-}
-
-const legacy = firebase.initializeApp(config, 'legacy')
-
-const db = legacy.database()
+/const config = {
+    apiKey: process.env.REACT_APP_API_KEY,
+    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+    databaseURL: process.env.REACT_APP_DATABASE_URL,
+    projectId: process.env.REACT_APP_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
+  };
+  app.initializeApp(config);
+  const auth = app.auth();
+  const db = app.database();
 
 export const fbState = db.ref('/state')
 
@@ -28,12 +30,13 @@ export const getTribals = db.ref('/tribals')
 export const getTeams = db.ref('/teams')
 export const getState = db.ref('/state')
 
+
 export const setTribal = points => {
     db.ref('/tribals').once('value', snapshot => {
         let currentData = snapshot.val()
         currentData.map((tribal, i) => {
             if (points.value === tribal.value) {
-                db.ref('/tribals/' + i + '/').set(points)
+                db.ref('/tribals/' + i + '/').update(points)
                 setMerged(points.merged)
                 return 'success'
             }
