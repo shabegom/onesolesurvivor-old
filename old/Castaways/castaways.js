@@ -1,4 +1,4 @@
-import Firebase from "../Firebase";
+import Firebase from "../../src/Firebase";
  
 
 const getFirebaseData = () =>

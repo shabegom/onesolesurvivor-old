@@ -27,9 +27,8 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-
       fireRedirect: false,
-
+      root: {}
     };
   }
 
@@ -39,6 +38,11 @@ class App extends Component {
     if (user) {
       this.props.firebase.auth.auth.reload(user)
     }
+    this.props.firebase.db.get.getRoot().once("value", snap => {
+      const root = snap.val()
+      this.setState({root})
+    })
+
   }
 
   handleLogin = () => this.setState({ loggedIn: true, showLogin: false });
@@ -53,9 +57,7 @@ class App extends Component {
   };
   render() {
     const processForm = (formData) => {
- 
-        this.props.firebase.db.get.getRoot().once("value", snap => {
-          const {tribals, castaways, teams} = snap.val()
+          const {tribals, castaways, teams} = this.state.root
           const points = processFormObject(formData, castaways, teams);
           const updatedTribals = tribals.map((tribal, i) => {
              if (i === points.num - 1) {
@@ -66,7 +68,6 @@ class App extends Component {
           })
           this.props.firebase.db.set.setTribals({...updatedTribals})
           points.merged && this.props.firebase.db.set.setMerged(points.merged);
-        })
         
       
         this.setState({ fireRedirect: true });
@@ -84,7 +85,7 @@ class App extends Component {
               <Route
                 exact={true}
                 path={baseUrl + "/"}
-                render={(props) => <Home />}
+                render={(props) => <Home root={this.state.root}/>}
               />
               <Route
                 exact={true}
@@ -98,6 +99,7 @@ class App extends Component {
                     <MainForm
                       processForm={processForm}
                       fireRedirect={this.state.fireRedirect}
+                      root={this.state.root}
                     />
                   </div>
                 )}

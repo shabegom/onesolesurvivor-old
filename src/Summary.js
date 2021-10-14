@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
-import { FirebaseContext } from "./Firebase";
+import React, { useState, useEffect } from "react";
+
 
 function toTitleCase(str) {
   return str.replace(/\w\S*/g, function (txt) {
@@ -7,17 +7,16 @@ function toTitleCase(str) {
   });
 }
 
-const Summary = () => {
-  const firebase = useContext(FirebaseContext);
+const Summary = ({tribals}) => {
+
   const [summary, setSummary] = useState([]);
   useEffect(() => {
-    firebase.db.get.getTribals().once("value", (snap) => {
-      const tribals = snap.val() || []
+
       const summaries = tribals
         .filter((tribal) => tribal.summary)
           .map((tribal) => tribal.summary);
         setSummary(summaries)
-    });
+
   });
   return (
     <div className='summary'>

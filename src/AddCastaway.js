@@ -14,7 +14,7 @@ let myform = null
       formsyForm.reset();
     };
 
-const AddCastaway = () => {
+const AddCastaway = ({castaways}) => {
   const firebase = useContext(FirebaseContext);
   function handleCastawaySubmit(data) {
     const castawayObject = {
@@ -22,14 +22,9 @@ const AddCastaway = () => {
       tribe: data.tribe,
       value: data.castaway.split(" ").join("-").toLowerCase()
     };
-    firebase.db.get.getCastaways().once("value", (snap) => {
-      const castaways = snap.val() || []
       castaways.push(castawayObject);
       firebase.db.set.setCastaways(castaways);
-      resetForm()
-    });
-
-    
+      resetForm() 
   }
   return (
     <Form className="form" onSubmit={handleCastawaySubmit} ref={refCallback}>

@@ -3,20 +3,17 @@ import { Form, Input, Select } from "formsy-react-components";
 import { castawaysDropDown } from "./data";
 import { FirebaseContext } from "./Firebase";
 
-const ChoosePicks = () => {
+const ChoosePicks = ({teams}) => {
   const [isSaved, setSaved] = useState(false);
   const firebase = useContext(FirebaseContext);
 
   useEffect(() => {
-    firebase.db.get.getTeams().once("value", snap => {
       const { currentUser } = firebase.auth.auth;
-      const teams = snap.val() || []
       teams.forEach(team => {
         if (currentUser.uid === team.id) {
           setSaved(true)
         }
       })
-    })
   }, [isSaved])
   const handlePicksFormSubmit = (data) => {
     const { currentUser } = firebase.auth.auth;
@@ -26,8 +23,6 @@ const ChoosePicks = () => {
       id: currentUser.uid
     };
     teamObject.picks.push(randomPick(castawaysDropDown, teamObject.picks))
-    firebase.db.get.getTeams().once("value", (snap) => {
-      const teams = snap.val() || []
       const existingTeam = teams.reduce((acc, team, index) => {
         if (team.id === currentUser.uid) {
           acc = index;
@@ -44,7 +39,6 @@ const ChoosePicks = () => {
         firebase.db.set.setTeams(teams)
         setSaved(true);
       }
-    });
   };
   return (
     <>

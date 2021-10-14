@@ -1,12 +1,11 @@
-import React, {useContext, useState, useEffect} from "react";
-import {FirebaseContext} from './Firebase'
+import React, { useState, useEffect} from "react";
 
-const Tribes = () => {
-  const firebase = useContext(FirebaseContext)
+
+const Tribes = ({root}) => {
+
   const [tribes, setTribes] = useState([])
   useEffect(() => {
-    firebase.db.get.getRoot().once("value", snap => {
-      let { castaways=[], tribals=[] } = snap.val()
+      let { castaways=[], tribals=[] } = root
       castaways = castaways.filter(castaway => {
         let include = true
         tribals.forEach(tribal => {
@@ -38,7 +37,7 @@ const Tribes = () => {
         return obj
       })
       setTribes(tribesObject)
-    })
+
   }, [])
   return (
     <div id='tribes' className='tribes'>

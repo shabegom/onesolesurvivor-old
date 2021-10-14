@@ -1,7 +1,7 @@
-import React, { useContext, useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import ReactTable from "react-table"
 import "react-table/react-table.css"
-import { FirebaseContext } from "./Firebase"
+
 
 const leaderStyle = {
   textAlign: "center",
@@ -37,15 +37,13 @@ const createTribalsColumns = (count) => {
   return finalArr
 }
 
-const Table = () => {
-  const firebase = useContext(FirebaseContext)
+const Table = ({root}) => {
   const [tribals, setTribals] = useState([])
   const [leader, setLeader] = useState(undefined)
   const [data, setData] = useState([])
   const [finalTribal, setFinalTribal] = useState(false)
   useEffect(() => {
-    firebase.db.get.getRoot().once("value", (snap) => {
-      let { teams = [], tribals = [] } = snap.val()
+      let { teams = [], tribals = [] } = root
       if (teams) {
         teams = teams.map((team) => {
           let totalPoints = 0
@@ -111,7 +109,6 @@ const Table = () => {
           setLeader(<p key={leaders[0].name}>{leaders[0].name}</p>)
         }
       }
-    })
   }, [])
   const tableSize = 19
   const columnArr = createTribalsColumns(tribals.length)

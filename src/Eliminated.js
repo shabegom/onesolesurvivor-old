@@ -1,11 +1,11 @@
-import React, { useState, useContext, useEffect } from "react";
-import { FirebaseContext } from "./Firebase";
-const Eliminated = () => {
-    const firebase = useContext(FirebaseContext)
+import React, { useState,  useEffect } from "react";
+
+const Eliminated = ({root}) => {
+
     const [castaways, setCastaways] = useState([])
     useEffect(() => {
-        firebase.db.get.getRoot().once('value', snap => {
-            let { castaways=[], tribals=[] } = snap.val()
+
+            let { castaways=[], tribals=[] } = root
 
                 castaways = castaways.filter((castaway) => {
                   let include = false;
@@ -17,7 +17,7 @@ const Eliminated = () => {
                   return include;
                 });
             setCastaways(castaways)
-        })
+
     }, [castaways])
     return (
         <>

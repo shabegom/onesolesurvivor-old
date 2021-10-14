@@ -1,22 +1,18 @@
-import React, { useContext, useState, useEffect } from "react";
-import Table from "./Table";
-import Tribes from "./Tribes";
-import Summary from "./Summary";
-import Rules from "./Rules";
-import Eliminated from "./Eliminated";
-import LoginModal from "./Modal";
-import ChoosePicks from "./ChoosePicks";
-import { FirebaseContext } from "./Firebase";
+import React, {  useState, useEffect } from "react"
+import Table from "./Table"
+import Tribes from "./Tribes"
+import Summary from "./Summary"
+import Rules from "./Rules"
+import Eliminated from "./Eliminated"
+import LoginModal from "./Modal"
+import ChoosePicks from "./ChoosePicks"
 
-const Home = ({ summary}) => {
-  const firebase = useContext(FirebaseContext);
-  const [started, setStarted] = useState(false);
+const Home = ({ summary, root }) => {
+  const [started, setStarted] = useState(false)
   useEffect(() => {
-    firebase.db.get.getState().once("value", (snap) => {
-      const { started } = snap.val();
-      setStarted(started);
-    });
-  }, []);
+    const { started } = root.state
+    setStarted(started)
+  }, [])
   return (
     <div
       className='home'
@@ -32,23 +28,23 @@ const Home = ({ summary}) => {
           Season 41 starts September 22nd!
         </h1>
       ) : started === "open" ? (
-        <ChoosePicks />
+        <ChoosePicks teams={root.teams} />
       ) : (
         <>
-          <Table />
+          <Table root={root} />
           <br />
-          <Summary />
+          <Summary tribals={root.tribals} />
         </>
       )}
 
       <br />
-      <Tribes/>
+      <Tribes root={root} />
       <br />
-      <Eliminated/>
+      <Eliminated root={root} />
       <br />
       <Rules />
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
