@@ -1,9 +1,6 @@
 /* eslint-disable */
 
-import { castawaysMultiSelect, teams } from "./data.js";
-
-export const processFormObject = form => {
-  console.log(form);
+export const processFormObject = (form, castaways, teams) => {
   const {
     merged,
     tribal,
@@ -68,10 +65,10 @@ export const processFormObject = form => {
     //
     if (extinction) {
       let returnedCastaways = extinction.map(c => ({ value: c }));
-      castawaysMultiSelect.push(...returnedCastaways);
+      castaways.push(...returnedCastaways);
     }
     const points = pointFuncs
-      .map(func => castawaysMultiSelect.map(c => func(c.value)))
+      .map(func => castaways.map(c => func(c.value)))
           // Remove any zero point values
       .map(point => removeZero(point))
       .reduce((a, b) => a.concat(b))
@@ -92,24 +89,24 @@ obj["immunity"] = immunity;
       obj["reward"] = reward;
 }
 
-    obj["eliminated"] = eliminated;
-    obj["extinction"] = extinction ? extinction : [];
+    obj["eliminated"] = {...eliminated}
+    obj["extinction"] = extinction ? {...extinction} : {};
     obj["complete"] = true;
     obj["value"] = tribal;
     obj["num"] = tribal.split("-")[1]
-    obj["points"] = Object.assign({}, points);
-    obj["tribes"] = buffDrops;
-    obj["teams"] = Object.assign({}, teamsScores);
+    obj["points"] = {...points};
+    obj["tribes"] = {...buffDrops};
+    obj["teams"] = {...teamsScores}
     obj["summary"] = { eliminated };
     obj["merged"] = merged;
-    obj["idolUsers"] = idolActioners.map(actioner => actioner.value);
-    obj["foundIdol"] = idolFound ? idolFound : [];
-    obj["wonIdol"] = idolWon ? idolWon : [];
-    idolFound ? (obj.summary["idolFound"] = idolFound) : "";
-    idolWon ? (obj.summary["idolWon"] = idolWon) : "";
-    immunity ? (obj.summary["immunity"] = immunity) : "";
-    reward ? (obj.summary["reward"] = reward) : "";
-    idolActioners ? (obj.summary["idolActions"] = idolActioners) : "";
+    obj["idolUsers"] = {...idolActioners.map(actioner => actioner.value)};
+    obj["foundIdol"] = idolFound ? {...idolFound} : {};
+    obj["wonIdol"] = idolWon ? {...idolWon} : {};
+    idolFound ? (obj.summary["idolFound"] = {...idolFound}) : "";
+    idolWon ? (obj.summary["idolWon"] = {...idolWon}) : "";
+    immunity ? (obj.summary["immunity"] = {...immunity}) : "";
+    reward ? (obj.summary["reward"] = {...reward}) : "";
+    idolActioners ? (obj.summary["idolActions"] = {...idolActioners}) : "";
     return obj;
   }
 };

@@ -53,22 +53,24 @@ class App extends Component {
   };
   render() {
     const processForm = (formData) => {
-      const points = processFormObject(formData);
-      if (points) {
-        this.props.firebase.db.get.getTribals().once("value", snap => {
-          const tribals = snap.val()
+ 
+        this.props.firebase.db.get.getRoot().once("value", snap => {
+          const {tribals, castaways, teams} = snap.val()
+          const points = processFormObject(formData, castaways, teams);
           const updatedTribals = tribals.map((tribal, i) => {
              if (i === points.num - 1) {
+               points["label"] = tribal.label
                 tribal = points
              }
             return tribal
           })
-          this.props.firebase.db.set.setTribals(updatedTribals)
+          this.props.firebase.db.set.setTribals({...updatedTribals})
+          points.merged && this.props.firebase.db.set.setMerged(points.merged);
         })
-        points.merged && this.props.firebase.db.set.setMerged(points.merged)
+        
       
         this.setState({ fireRedirect: true });
-      }
+      
     };
 
     const baseUrl = process.env.PUBLIC_URL;
