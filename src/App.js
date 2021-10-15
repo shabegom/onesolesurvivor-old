@@ -41,8 +41,8 @@ class App extends Component {
       this.props.firebase.auth.auth.reload(user)
     }
     this.props.firebase.db.get.getRoot()
-      .once("value")
-      .then((snap) => {
+      .on("value"
+      , (snap) => {
         const root = snap.val()
         this.setState({ root })
       })

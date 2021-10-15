@@ -160,7 +160,7 @@ class MainForm extends Component {
   }
 
   componentDidMount() {
-    this.props.firebase.db.get.getRoot().once('value').then((snap) => {
+    this.props.firebase.db.get.getRoot().on('value', (snap) => {
     const root = snap.val()
     let { state, tribals, castaways } = root
     const { started = "closed", numTribes = 2, merged = "false" } = state
