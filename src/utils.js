@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-export const processFormObject = (form, castaways, teams) => {
+export const processFormObject = (form, castaways, teams, tribals) => {
   const {
     merged,
     tribal,
@@ -11,6 +11,16 @@ export const processFormObject = (form, castaways, teams) => {
     immunity,
     reward
   } = form;
+
+  castaways = castaways.filter((castaway) => {
+    let include = true
+    tribals.forEach((tribal) => {
+      if (tribal.eliminated && tribal.eliminated.includes(castaway.value)) {
+        include = false
+      }
+    })
+    return include
+  })
 
   //required fields
   if (!eliminated || !tribal) {

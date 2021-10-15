@@ -61,7 +61,7 @@ class App extends Component {
   render() {
     const processForm = (formData) => {
       const { tribals, castaways, teams } = this.state.root
-      const points = processFormObject(formData, castaways, teams)
+      const points = processFormObject(formData, castaways, teams, tribals)
       const updatedTribals = tribals.map((tribal, i) => {
         if (i === points.num - 1) {
           points["label"] = tribal.label
