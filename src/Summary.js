@@ -7,17 +7,16 @@ function toTitleCase(str) {
   });
 }
 
-const Summary = ({tribals}) => {
-
+const Summary = ({root}) => {
   const [summary, setSummary] = useState([]);
   useEffect(() => {
-
+      const {tribals} = root
       const summaries = tribals
         .filter((tribal) => tribal.summary)
           .map((tribal) => tribal.summary);
         setSummary(summaries)
 
-  });
+  }, [root]);
   return (
     <div className='summary'>
       <div

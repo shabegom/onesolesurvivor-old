@@ -1,4 +1,4 @@
-import React, {  useState, useEffect } from "react"
+import React, {useState, useEffect} from "react"
 import Table from "./Table"
 import Tribes from "./Tribes"
 import Summary from "./Summary"
@@ -7,12 +7,14 @@ import Eliminated from "./Eliminated"
 import LoginModal from "./Modal"
 import ChoosePicks from "./ChoosePicks"
 
-const Home = ({ summary, root }) => {
-  const [started, setStarted] = useState(false)
+
+const Home = ({ root }) => {
+  const [started, setStarted] = useState("closed")
+  
   useEffect(() => {
-    const { started } = root.state
-    setStarted(started)
-  }, [])
+    setStarted(root.state.started)
+  }, [root])
+
   return (
     <div
       className='home'
@@ -28,12 +30,12 @@ const Home = ({ summary, root }) => {
           Season 41 starts September 22nd!
         </h1>
       ) : started === "open" ? (
-        <ChoosePicks teams={root.teams} />
+        <ChoosePicks teams={root.teams} castaways={root.castaways} />
       ) : (
         <>
           <Table root={root} />
           <br />
-          <Summary tribals={root.tribals} />
+          <Summary root={root} />
         </>
       )}
 

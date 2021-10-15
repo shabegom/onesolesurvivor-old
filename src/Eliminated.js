@@ -18,7 +18,7 @@ const Eliminated = ({root}) => {
                 });
             setCastaways(castaways)
 
-    }, [castaways])
+    }, [root])
     return (
         <>
             {castaways[0] &&

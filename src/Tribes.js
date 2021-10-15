@@ -38,7 +38,7 @@ const Tribes = ({root}) => {
       })
       setTribes(tribesObject)
 
-  }, [])
+  }, [root])
   return (
     <div id='tribes' className='tribes'>
       {makeTribes(tribes)}

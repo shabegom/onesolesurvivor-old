@@ -109,7 +109,7 @@ const Table = ({root}) => {
           setLeader(<p key={leaders[0].name}>{leaders[0].name}</p>)
         }
       }
-  }, [])
+  }, [root])
   const tableSize = 19
   const columnArr = createTribalsColumns(tribals.length)
   const columns = [

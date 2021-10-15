@@ -1,9 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Form, Input, Select } from "formsy-react-components";
-import { castawaysDropDown } from "./data";
 import { FirebaseContext } from "./Firebase";
 
-const ChoosePicks = ({teams}) => {
+const ChoosePicks = ({teams, castaways}) => {
   const [isSaved, setSaved] = useState(false);
   const firebase = useContext(FirebaseContext);
 
@@ -22,7 +21,7 @@ const ChoosePicks = ({teams}) => {
       picks: [data["pick-1"], data["pick-2"], data["pick-3"]],
       id: currentUser.uid
     };
-    teamObject.picks.push(randomPick(castawaysDropDown, teamObject.picks))
+    teamObject.picks.push(randomPick(castaways, teamObject.picks))
       const existingTeam = teams.reduce((acc, team, index) => {
         if (team.id === currentUser.uid) {
           acc = index;
@@ -60,19 +59,19 @@ const ChoosePicks = ({teams}) => {
             <Select
               name='pick-1'
               label='First Pick'
-              options={castawaysDropDown}
+              options={castaways}
               required
             />
             <Select
               name='pick-2'
               label='Second Pick'
-              options={castawaysDropDown}
+              options={castaways}
               required
             />
             <Select
               name='pick-3'
               label='Third Pick'
-              options={castawaysDropDown}
+              options={castaways}
               required
             />
             <input

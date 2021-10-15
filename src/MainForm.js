@@ -4,6 +4,7 @@ import { Redirect } from "react-router"
 import { withFirebase } from "./Firebase"
 import AddCastaway from "./AddCastaway"
 
+
 const Selected = (props) => {
   const processSelection = (selection) => {
     let selections = []
@@ -88,7 +89,7 @@ const Tribe = (props) => {
       />
       <Select
         name={props.number.toString()}
-        options={props.castaways.shift()}
+        options={props.castaways.slice(1)}
         help='hold command to choose multiple'
         onChange={props.handleNewTribeCastaway}
         multiple
@@ -133,6 +134,7 @@ const DisplayBuffs = (props) => {
   )
 }
 
+
 class MainForm extends Component {
   constructor(props) {
     super(props)
@@ -140,7 +142,7 @@ class MainForm extends Component {
       buffs: false,
       numTribes: 2,
       loggedIn: false,
-      started: "closed",
+      started: "",
       hasIdol: [],
       tribal: undefined,
       tribals: [],
@@ -158,7 +160,9 @@ class MainForm extends Component {
   }
 
   componentDidMount() {
-    let { state, tribals, castaways } = this.props.root
+    this.props.firebase.db.get.getRoot().once('value').then((snap) => {
+    const root = snap.val()
+    let { state, tribals, castaways } = root
     const { started = "closed", numTribes = 2, merged = "false" } = state
     if (tribals) {
       tribals = tribals.filter((tribal) => tribal.value !== "final-tribal")
@@ -208,6 +212,7 @@ class MainForm extends Component {
       numTribes,
       merged
     })
+  })
     this.props.firebase.auth.auth.onAuthStateChanged((authUser) => {
       const adminId = process.env.REACT_APP_ADMIN_UID
       authUser && authUser.uid === adminId
@@ -266,15 +271,15 @@ class MainForm extends Component {
   }
 
   handleCreateTribal = (event) => {
-      const tribals = this.state.tribals
-      const count = tribals.length + 1
-      tribals.push({
-        value: `tribal-${count}`,
-        label: `Tribal ${count}`,
-        complete: false
-      })
-      this.props.firebase.db.set.setTribals(tribals)
-      this.setState({ tribals, tribal: `tribal-${count}` })
+    const tribals = this.state.tribals.slice(1)
+    const count = tribals.length + 1
+    tribals.push({
+      value: `tribal-${count}`,
+      label: `Tribal ${count}`,
+      complete: false
+    })
+    this.props.firebase.db.set.setTribals(tribals)
+    this.setState({ tribals, tribal: `tribal-${count}` })
   }
 
   handleSelectTribal = (label, value) => {
@@ -292,19 +297,19 @@ class MainForm extends Component {
       this.setState(state)
     } else {
       const val = parseInt(value.split("-")[1]) - 1
-      const {tribals} = this.props.root
-        const object = tribals[val] || {}
-        const { eliminated, extinction, foundIdol, wonIdol, reward, immunity } =
-          object
-        this.setState({
-          tribal: [value],
-          eliminated,
-          extinction,
-          foundIdol,
-          wonIdol,
-          reward,
-          immunity
-        })
+      const tribals = this.state.tribals.slice(1)
+      const object = tribals[val] || {}
+      const { eliminated, extinction, foundIdol, wonIdol, reward, immunity } =
+        object
+      this.setState({
+        tribal: [value],
+        eliminated,
+        extinction,
+        foundIdol,
+        wonIdol,
+        reward,
+        immunity
+      })
     }
   }
   processForm = (data) => {
@@ -317,17 +322,17 @@ class MainForm extends Component {
     data.immunity = this.state.immunity
     data.reward = this.state.reward
 
-      const {castaways} = this.props.root
-      const updatedCastaways = []
-      castaways.forEach((castaway) => {
-        this.state.tribes.forEach((tribe) => {
-          if (tribe.castaways.includes(castaway.value)) {
-            castaway.tribe = tribe.tribe
-          }
-        })
-        updatedCastaways.push(castaway)
+    const castaways = this.state.castaways.slice(1)
+    const updatedCastaways = []
+    castaways.forEach((castaway) => {
+      this.state.tribes.forEach((tribe) => {
+        if (tribe.castaways.includes(castaway.value)) {
+          castaway.tribe = tribe.tribe
+        }
       })
-      this.props.firebase.db.set.setCastaways(updatedCastaways)
+      updatedCastaways.push(castaway)
+    })
+    this.props.firebase.db.set.setCastaways(updatedCastaways)
     this.props.processForm(data)
   }
 
@@ -392,7 +397,7 @@ class MainForm extends Component {
           >
             Create New Tribal
           </button>
-          {this.state.tribals[0] && this.state.tribal !== "final-tribal" && (
+          {this.state.tribals[1] && this.state.tribal !== "final-tribal" && (
             <Form onSubmit={(data) => this.processForm(data)}>
               <Selection
                 name='tribal'
@@ -511,18 +516,18 @@ class MainForm extends Component {
           {this.state.tribal === "final-tribal" && (
             <Form
               onSubmit={(data) => {
-                    const {tribals} = this.props.root || []
-                    const finalExists = tribals.filter(
-                      (tribal) => tribal.value === "final-tribal"
-                    )[0]
-                    if (!finalExists) {
-                      tribals.push({
-                        value: `final-tribal`,
-                        label: `Final Tribal`,
-                        complete: "false"
-                      })
-                      this.props.firebase.db.set.setTribals(tribals)
-                    }
+                const { tribals } = this.props.root || []
+                const finalExists = tribals.filter(
+                  (tribal) => tribal.value === "final-tribal"
+                )[0]
+                if (!finalExists) {
+                  tribals.push({
+                    value: `final-tribal`,
+                    label: `Final Tribal`,
+                    complete: "false"
+                  })
+                  this.props.firebase.db.set.setTribals(tribals)
+                }
                 data.tribal = "final-tribal"
                 this.processForm(data)
               }}
@@ -567,30 +572,36 @@ class MainForm extends Component {
     }
 
     if (this.state.loggedIn) {
-      if (this.state.started === "closed") {
-        return (
-          <div className='flex-center'>
-            Add Castaways
-            <AddCastaway castaways={this.state.castaways} />
-            <br />
-            <button className='btn btn-primary' onClick={this.handleOpenPicks}>
-              Open the Picks!
-            </button>
-          </div>
-        )
-      } else if (this.state.started === "open") {
-        return (
-          <div className='flex-center'>
-            <button className='btn btn-primary' onClick={this.handleOpenSeason}>
-              Start the Season!
-            </button>
-          </div>
-        )
-      } else {
-        return displayForm()
-      }
+      return (
+        <>
+          {this.state.started === "closed" ? (
+            <div className='flex-center'>
+              Add Castaways
+              <AddCastaway castaways={this.state.castaways} />
+              <br />
+              <button
+                className='btn btn-primary'
+                onClick={this.handleOpenPicks}
+              >
+                Open the Picks!
+              </button>
+            </div>
+          ) : this.state.started === "open" ? (
+            <div className='flex-center'>
+              <button
+                className='btn btn-primary'
+                onClick={this.handleOpenSeason}
+              >
+                Start the Season!
+              </button>
+            </div>
+          ) : (
+            displayForm()
+          )}
+        </>
+      )
     } else {
-      return ""
+      return <></>
     }
   }
 }

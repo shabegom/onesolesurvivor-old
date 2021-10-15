@@ -32,6 +32,7 @@ function Firebase(auth, db) {
   const getTeam = team => db.ref(`/teams/${team}`);
   const getTribes = () => db.ref("/tribes");
   const getState = () => db.ref("/state");
+  
 
   // [> Database  setters  <]
 
@@ -56,7 +57,7 @@ function Firebase(auth, db) {
         getTeams,
         getTeam,
         getTribes,
-        getState
+        getState,
       },
       set: {
         setCastaways,

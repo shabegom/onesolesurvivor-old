@@ -26,7 +26,11 @@ class App extends Component {
     super()
     this.state = {
       fireRedirect: false,
-      root: {}
+      root: {
+        state: {
+          started: "closed"
+        }
+      }
     }
   }
 
@@ -36,10 +40,12 @@ class App extends Component {
     if (user) {
       this.props.firebase.auth.auth.reload(user)
     }
-    this.props.firebase.db.get.getRoot().once("value", (snap) => {
-      const root = snap.val()
-      this.setState({ root })
-    })
+    this.props.firebase.db.get.getRoot()
+      .once("value")
+      .then((snap) => {
+        const root = snap.val()
+        this.setState({ root })
+      })
   }
 
   handleLogin = () => this.setState({ loggedIn: true, showLogin: false })
@@ -93,7 +99,6 @@ class App extends Component {
                   <MainForm
                     processForm={processForm}
                     fireRedirect={this.state.fireRedirect}
-                    root={this.state.root}
                   />
                 </div>
               )}
