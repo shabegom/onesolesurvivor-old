@@ -95,7 +95,7 @@ const Table = ({root}) => {
             acc.push(team)
           }
           acc.forEach((a, i) => {
-            if (team.totalPoints > a.totalPoints) {
+            if (team.totalPoints < a.totalPoints) {
               let newLeader = acc.splice(i, 1, team)
               acc = newLeader
             }
