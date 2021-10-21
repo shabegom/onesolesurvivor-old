@@ -90,7 +90,7 @@ const Table = ({root}) => {
           return team
         })
         setData(teams)
-        const leaders = teams.reduce((acc, team) => {
+        const leaders = data.reduce((acc, team) => {
           if (acc.length === 0) {
             acc.push(team)
           }
