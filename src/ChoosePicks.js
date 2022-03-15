@@ -24,7 +24,11 @@ const ChoosePicks = ({teams, castaways}) => {
       id: currentUser.uid
     };
     teamObject.picks.push(randomPick(castaways, teamObject.picks))
+    if (teams) {
         teams.push(teamObject);
+    } else {
+      teams = [teamObject];
+    }
         firebase.db.set.setTeams(teams)
         setSaved(true);
   };
