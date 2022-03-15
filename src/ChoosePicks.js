@@ -8,11 +8,13 @@ const ChoosePicks = ({teams, castaways}) => {
 
   useEffect(() => {
       const { currentUser } = firebase.auth.auth;
+    if (teams) {
       teams.forEach(team => {
         if (currentUser.uid === team.id) {
           setSaved(true)
         }
       })
+    }
   }, [isSaved])
   const handlePicksFormSubmit = (data) => {
     const { currentUser } = firebase.auth.auth;
