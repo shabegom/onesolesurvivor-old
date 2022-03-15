@@ -14,6 +14,8 @@ const ChoosePicks = ({teams, castaways}) => {
           setSaved(true)
         }
       })
+    } else {
+      teams = [];
     }
   }, [isSaved])
   const handlePicksFormSubmit = (data) => {
@@ -24,11 +26,7 @@ const ChoosePicks = ({teams, castaways}) => {
       id: currentUser.uid
     };
     teamObject.picks.push(randomPick(castaways, teamObject.picks))
-    if (teams) {
         teams.push(teamObject);
-    } else {
-      teams = [teamObject];
-    }
         firebase.db.set.setTeams(teams)
         setSaved(true);
   };
@@ -94,7 +92,7 @@ function randomPick(array = [], currentPicks = []) {
   const options = array.filter(pick => {
     let include = true
     currentPicks.forEach(choice => {
-      if (pick.value === choice || pick.value === "clear" || pick.value === "sara-wilson" || pick.value === "eric-abraham") {
+      if (pick.value === choice || pick.value === "clear" || pick.value === "jackson-fox" || pick.value === "eric-abraham") {
         include = false
       }
     })
