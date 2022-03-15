@@ -24,22 +24,9 @@ const ChoosePicks = ({teams, castaways}) => {
       id: currentUser.uid
     };
     teamObject.picks.push(randomPick(castaways, teamObject.picks))
-      const existingTeam = teams.reduce((acc, team, index) => {
-        if (team.id === currentUser.uid) {
-          acc = index;
-        }
-        return acc;
-      }, undefined);
-      teamObject.value = `team-${teams.length}`;
-      if (existingTeam) {
-        teams.splice(existingTeam, 1, teamObject);
-        firebase.db.set.setTeams(teams)
-        setSaved(true);
-      } else {
         teams.push(teamObject);
         firebase.db.set.setTeams(teams)
         setSaved(true);
-      }
   };
   return (
     <>
