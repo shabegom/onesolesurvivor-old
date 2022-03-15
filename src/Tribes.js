@@ -73,7 +73,6 @@ imagePath = require(`./images/${castaway.value}.webp`);
               fontFamily: "arial",
               textAlign: "center",
               fontSize: "12px",
-              marginTop: "-20px"
             }}
           >
             {castaway.name}
